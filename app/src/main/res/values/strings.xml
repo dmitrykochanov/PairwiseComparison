@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Pairwise Comparison</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_comparison">ComparisonActivity</string>
+    <string name="title_add_new_comparison">Add new comparison</string>
+    <string name="title_add_new_option">Add new option</string>vv
+    <string name="tab_result">Result</string>
+    <string name="tap_options">Options</string>
+    <string name="tab_compare">Compare</string>
+    <string name="hint_option_name">Option name</string>
+    <string name="hint_comparison_name">Comparison name</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_ok">OK</string>
+    <string name="error_empty_option_name">Name can\'t be empty</string>
+    <string name="error_empty_comparison_name">Name can\'t be empty</string>
+
+    <string name="description_click_to_add">Click the + button to add</string>
+    <string name="title_no_comparisons">No Comparisons</string>
+    <string name="title_no_options">No Options</string>
+    <string name="title_no_option_comparisons">Nothing to compare</string>
+    <string name="description_no_option_comparisons">Click the + button to add some options</string>
+    <string name="title_no_results">No results</string>
+    <string name="description_no_results">Add some options and compare them first</string>
+    <string name="menu_licenses">Licenses</string>
+
+</resources>
