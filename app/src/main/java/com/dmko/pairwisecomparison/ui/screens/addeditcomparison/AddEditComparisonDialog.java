@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.Comparison;
@@ -26,8 +27,10 @@ import butterknife.Unbinder;
 
 public class AddEditComparisonDialog extends BaseDialogFragment implements AddEditComparisonContract.View {
     private static final String ARG_COMP_ID = "comp_id";
+
     @BindView(R.id.input_name) TextInputLayout inputName;
     @BindView(R.id.progress_loading) ProgressBar progressLoading;
+    @BindView(R.id.text_title) TextView textTitle;
 
     @Inject AddEditComparisonContract.Presenter presenter;
 
@@ -43,14 +46,22 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
 
     @Nullable
     @Override
+    @SuppressWarnings("ConstantConditions")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_add_edit_comparison, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         String comparisonId = getArguments().getString(ARG_COMP_ID);
+        if (comparisonId != null) {
+            textTitle.setText(R.string.title_edit_comparison);
+        }
         presenter.start(comparisonId);
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+        }
 
         return view;
     }
@@ -74,6 +85,7 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
     }
 
     @OnClick(R.id.button_ok)
+    @SuppressWarnings("ConstantConditions")
     public void onButtonOkClicked() {
         String newName = inputName.getEditText().getText().toString().trim();
         if (newName.isEmpty()) {
@@ -99,6 +111,7 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void setComparison(Comparison comparison) {
         String name = comparison.getName();
         if (name != null) {

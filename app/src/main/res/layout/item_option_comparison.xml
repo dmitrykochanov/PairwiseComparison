@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.dmko.pairwisecomparison.ui.views.OptionComparisonView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.dmko.pairwisecomparison.ui.views.OptionComparisonView
         android:id="@+id/view_option_comparison"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

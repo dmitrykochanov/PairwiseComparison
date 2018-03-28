@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.Option;
@@ -30,6 +31,7 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
 
     @BindView(R.id.input_name) TextInputLayout inputName;
     @BindView(R.id.progress_loading) ProgressBar progressLoading;
+    @BindView(R.id.text_title) TextView textTitle;
 
     @Inject AddEditOptionContract.Presenter presenter;
 
@@ -45,6 +47,7 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
 
     @Nullable
     @Override
+    @SuppressWarnings("ConstantConditions")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_add_edit_option, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -52,8 +55,15 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
         String comparisonId = getArguments().getString(ARG_COMP_ID);
         String optionId = getArguments().getString(ARG_OPTION_ID);
         presenter.start(comparisonId, optionId);
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        if (optionId != null) {
+            textTitle.setText(R.string.title_edit_option);
+        }
+
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+        }
 
         return view;
     }
@@ -78,6 +88,7 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
     }
 
     @OnClick(R.id.button_ok)
+    @SuppressWarnings("ConstantConditions")
     public void onButtonOkClicked() {
         String newName = inputName.getEditText().getText().toString().trim();
         if (newName.isEmpty()) {
@@ -99,10 +110,11 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
 
     @Override
     public void showLoading(boolean isLoading) {
-        progressLoading.setVisibility(isLoading?View.VISIBLE:View.GONE);
+        progressLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void setOption(Option option) {
         String name = option.getName();
         if (name != null) {
