@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 
 public class ComparisonActivity extends AppCompatActivity {
     private static final String EXTRA_COMP_ID = "com.dmko.comp_id";
+    private static final String EXTRA_COMP_NAME = "com.dmko.comp_name";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tab_layout) TabLayout tabLayout;
@@ -42,12 +43,14 @@ public class ComparisonActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         String comparisonId = getIntent().getStringExtra(EXTRA_COMP_ID);
+        String comparisonName = getIntent().getStringExtra(EXTRA_COMP_NAME);
         comparisonResultFragment = ComparisonResultFragment.newInstance(comparisonId);
         optionsFragment = OptionsFragment.newInstance(comparisonId);
         optionComparisonsFragment = OptionComparisonsFragment.newInstance(comparisonId);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(comparisonName);
 
         fabAdd.hide();
         fabAdd.setOnClickListener(v -> {
@@ -133,9 +136,10 @@ public class ComparisonActivity extends AppCompatActivity {
         }
     }
 
-    public static Intent getIntent(Context context, String comparisonId) {
+    public static Intent getIntent(Context context, String comparisonId, String comparisonName) {
         Intent intent = new Intent(context, ComparisonActivity.class);
         intent.putExtra(EXTRA_COMP_ID, comparisonId);
+        intent.putExtra(EXTRA_COMP_NAME, comparisonName);
         return intent;
     }
 }

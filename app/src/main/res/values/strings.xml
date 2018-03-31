@@ -23,4 +23,5 @@
     <string name="title_no_results">No results</string>
     <string name="description_no_results">Add some options and compare them first</string>
     <string name="menu_licenses">Licenses</string>
+    <string name="title_licenses">Licenses</string>
 </resources>

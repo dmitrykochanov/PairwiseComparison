@@ -111,7 +111,7 @@ public class ComparisonsFragment extends BaseFragment implements ComparisonsCont
 
     @Override
     public void openComparison(Comparison comparison) {
-        Intent intent = ComparisonActivity.getIntent(getContext(), comparison.getId());
+        Intent intent = ComparisonActivity.getIntent(getContext(), comparison.getId(), comparison.getName());
         startActivity(intent);
     }
 
