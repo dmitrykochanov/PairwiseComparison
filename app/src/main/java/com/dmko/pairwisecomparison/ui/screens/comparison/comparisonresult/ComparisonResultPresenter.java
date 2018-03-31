@@ -1,7 +1,5 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult;
 
-import android.util.Log;
-
 import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
@@ -10,6 +8,8 @@ import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
@@ -24,17 +24,18 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
 
     @Override
     public void start(String comparisonId) {
-        Log.i(LOG_APP, "Starting " + ComparisonResultPresenter.class.getSimpleName());
-        Log.i(LOG_APP, "Comparison id = " + comparisonId);
+        Timber.tag(LOG_APP);
+        Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         getView().showLoading(true);
         addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .subscribeOn(schedulers.io())
                 .map(optionComparisonEntries -> {
-                    Log.i(LOG_APP, "Calculating option results for " + optionComparisonEntries.size() + " " + OptionComparisonEntry.class.getSimpleName());
+                    Timber.tag(LOG_APP);
+                    Timber.i("Calculating option results for %s[%d]", OptionComparisonEntry.class.getSimpleName(), optionComparisonEntries.size());
+
                     Map<Option, Integer> results = new HashMap<>();
                     for (OptionComparisonEntry entry : optionComparisonEntries) {
-                        Log.i(LOG_APP, " " + entry);
                         if (entry.getProgress() == 0) {
                             continue;
                         }
@@ -64,7 +65,9 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
                 })
                 .observeOn(schedulers.ui())
                 .subscribe(optionResults -> {
-                    Log.i(LOG_APP, "Sending " + optionResults.size() + " results to the view");
+                    Timber.tag(LOG_APP);
+                    Timber.i("%s sending to %s, %s[%d]", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), Option.class.getSimpleName(), optionResults.size());
+
                     if (isViewAttached()) {
                         getView().setResults(optionResults);
                         getView().showLoading(false);

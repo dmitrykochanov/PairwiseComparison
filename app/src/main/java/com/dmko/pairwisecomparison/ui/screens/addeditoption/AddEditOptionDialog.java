@@ -49,6 +49,7 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
     @Override
     @SuppressWarnings("ConstantConditions")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.dialog_add_edit_option, container, false);
         unbinder = ButterKnife.bind(this, view);
 

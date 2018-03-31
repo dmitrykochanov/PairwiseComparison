@@ -1,8 +1,6 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons;
 
-import android.util.Log;
-
-import com.dmko.pairwisecomparison.data.entities.Option;
+import com.dmko.pairwisecomparison.data.entities.OptionComparison;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
@@ -10,6 +8,8 @@ import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import java.util.Collections;
 import java.util.List;
+
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
@@ -25,8 +25,8 @@ public class OptionComparisonsPresenter extends BasePresenterImpl<OptionComparis
 
     @Override
     public void start(String comparisonId) {
-        Log.i(LOG_APP, "Starting " + OptionComparisonsPresenter.class.getSimpleName());
-        Log.i(LOG_APP, "Comparison id = " + comparisonId);
+        Timber.tag(LOG_APP);
+        Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         this.comparisonId = comparisonId;
         getView().showLoading(true);
@@ -35,7 +35,9 @@ public class OptionComparisonsPresenter extends BasePresenterImpl<OptionComparis
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
                 .subscribe(optionComparisons -> {
-                    Log.i(LOG_APP, "Sending " + Option.class.getSimpleName() + "[" + optionComparisons.size() + "] to the view");
+                    Timber.tag(LOG_APP);
+                    Timber.i("%s sending to %s, %s[%d]", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), OptionComparison.class.getSimpleName(), optionComparisons.size());
+
                     if (isViewAttached()) {
                         getView().setOptionComparisons(optionComparisons);
                         getView().showLoading(false);

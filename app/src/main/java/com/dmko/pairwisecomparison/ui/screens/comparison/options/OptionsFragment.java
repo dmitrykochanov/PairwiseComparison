@@ -54,11 +54,15 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_options, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         setupRecyclerView();
-        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        String comparisonId = null;
+        if (getArguments() != null) {
+            comparisonId = getArguments().getString(ARG_COMP_ID);
+        }
         presenter.start(comparisonId);
 
         return view;
@@ -96,6 +100,7 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void showOptionDialog(String comparisonId, String optionId) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
@@ -113,6 +118,7 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
         presenter.addOptionSelected();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerOptions.setLayoutManager(layoutManager);

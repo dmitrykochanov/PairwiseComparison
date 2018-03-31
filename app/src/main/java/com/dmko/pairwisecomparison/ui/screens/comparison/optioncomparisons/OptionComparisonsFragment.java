@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
-import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
+import static com.dmko.pairwisecomparison.utils.LogTags.LOG_DATA;
 
 public class OptionComparisonsFragment extends BaseFragment implements OptionComparisonsContract.View {
     private static final String TAG_DIALOG = "dialog";
@@ -58,10 +58,14 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_option_comparisons, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        String comparisonId = null;
+        if (getArguments() != null) {
+            comparisonId = getArguments().getString(ARG_COMP_ID);
+        }
         setupRecyclerView();
         presenter.start(comparisonId);
 
@@ -82,7 +86,9 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
     }
 
     public void saveChanges() {
-        Log.i(LOG_APP, "Saving " + adapter.getOptionComparisons().size() + " " + OptionComparison.class.getSimpleName());
+        Timber.tag(LOG_DATA);
+        Timber.i("Saving %s[%d]", OptionComparison.class.getSimpleName(), adapter.getOptionComparisons().size());
+
         presenter.updateOptionComparisons(adapter.getOptionComparisons());
 
     }
@@ -110,6 +116,7 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void showOptionDialog(String comparisonId) {
         saveChanges();
@@ -124,6 +131,7 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
         dialog.show(ft, TAG_DIALOG);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerOptionComparisons.setLayoutManager(layoutManager);

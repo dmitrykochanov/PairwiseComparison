@@ -1,8 +1,6 @@
 package com.dmko.pairwisecomparison.data.repositories.impl;
 
 
-import android.util.Log;
-
 import com.dmko.pairwisecomparison.data.dao.ComparisonsDao;
 import com.dmko.pairwisecomparison.data.dao.OptionsDao;
 import com.dmko.pairwisecomparison.data.entities.Option;
@@ -16,6 +14,7 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.internal.operators.completable.CompletableFromAction;
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_DATA;
 
@@ -32,7 +31,8 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     public Flowable<List<Option>> getOptionsByComparisonId(String comparisonId) {
         return optionsDao.getOptionsByComparisonId(comparisonId)
                 .doOnNext(options -> {
-                    Log.i(LOG_DATA, "Retrieving " + Option.class.getSimpleName() + "[" + options.size() + "]");
+                    Timber.tag(LOG_DATA);
+                    Timber.i("Retrieving %s[%d]", Option.class.getSimpleName(), options.size());
                 });
     }
 
@@ -40,7 +40,8 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     public Flowable<Option> getOptionById(String optionId) {
         return optionsDao.getOptionById(optionId)
                 .doOnNext(option -> {
-                    Log.i(LOG_DATA, "Retrieving " + option);
+                    Timber.tag(LOG_DATA);
+                    Timber.i("Retrieving %s", option.toString());
                 });
     }
 
@@ -48,14 +49,18 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     public Completable insertOption(Option option) {
         return new CompletableFromAction(() -> {
             List<Option> options = optionsDao.getOptionsByComparisonId(option.getComparisonId()).blockingFirst();
-            Log.i(LOG_DATA, "Inserting " + option);
+            Timber.tag(LOG_DATA);
+            Timber.i("Retrieving %s", option.toString());
 
             List<OptionComparison> optionComparisons = new ArrayList<>();
             for (Option o : options) {
                 OptionComparison optionComparison = new OptionComparison(option.getId(), o.getId(), 0);
-                Log.i(LOG_DATA, "Inserting " + optionComparison);
+                Timber.tag(LOG_DATA);
+                Timber.i("Retrieving %s", optionComparison.toString());
                 optionComparisons.add(optionComparison);
             }
+            Timber.tag(LOG_DATA);
+            Timber.i("Inserting %s with %s[%d]", Option.class.getSimpleName(), OptionComparison.class.getSimpleName(), optionComparisons.size());
 
             optionsDao.insertOptionWithComparisons(option, optionComparisons);
         });
@@ -64,7 +69,8 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     @Override
     public Completable updateOption(Option option) {
         return new CompletableFromAction(() -> {
-            Log.i(LOG_DATA, "Updating " + option);
+            Timber.tag(LOG_DATA);
+            Timber.i("Updating %s", option.toString());
             optionsDao.updateOption(option);
         });
     }
@@ -72,7 +78,8 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     @Override
     public Completable deleteOption(Option option) {
         return new CompletableFromAction(() -> {
-            Log.i(LOG_DATA, "Deleting " + option);
+            Timber.tag(LOG_DATA);
+            Timber.i("Deleting %s", option.toString());
             optionsDao.deleteOption(option);
         });
     }
@@ -81,7 +88,8 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     public Flowable<List<OptionComparisonEntry>> getOptionComparisonEntriesByComparisonId(String comparisonId) {
         return optionsDao.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .doOnNext(optionComparisonEntries -> {
-                    Log.i(LOG_DATA, "Retrieving " + OptionComparisonEntry.class.getSimpleName() + "[" + optionComparisonEntries.size() + "]");
+                    Timber.tag(LOG_DATA);
+                    Timber.i("Retrieving %s[%d]", OptionComparisonEntry.class.getSimpleName(), optionComparisonEntries.size());
                 });
     }
 
@@ -90,8 +98,9 @@ public class OptionsRepositoryImpl implements OptionsRepository {
         return new CompletableFromAction(() -> {
             List<OptionComparison> optionComparisons = new ArrayList<>(optionComparisonEntries.size());
             for (OptionComparisonEntry entry : optionComparisonEntries) {
+                Timber.tag(LOG_DATA);
+                Timber.i("Creating %s from %s", OptionComparison.class.getSimpleName(), entry.toString());
 
-                Log.i(LOG_DATA, "Creating " + OptionComparison.class.getSimpleName() + " from " + entry);
                 OptionComparison optionComparison = new OptionComparison();
                 optionComparison.setId(entry.getId());
                 optionComparison.setFirstOptionId(entry.getFirstOption().getId());
@@ -100,7 +109,8 @@ public class OptionsRepositoryImpl implements OptionsRepository {
 
                 optionComparisons.add(optionComparison);
             }
-            Log.i(LOG_DATA, "Updating " + optionComparisons);
+            Timber.tag(LOG_DATA);
+            Timber.i("Updating %s[%d]", OptionComparison.class.getSimpleName(), optionComparisons.size());
             optionsDao.updateOptionComparisons(optionComparisons.toArray(new OptionComparison[optionComparisons.size()]));
         });
     }

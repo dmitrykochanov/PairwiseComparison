@@ -1,11 +1,11 @@
 package com.dmko.pairwisecomparison.ui.screens.addeditcomparison;
 
-import android.util.Log;
-
 import com.dmko.pairwisecomparison.data.entities.Comparison;
 import com.dmko.pairwisecomparison.data.repositories.ComparisonRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
+
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
@@ -22,7 +22,8 @@ public class AddEditComparisonPresenter extends BasePresenterImpl<AddEditCompari
 
     @Override
     public void start(String comparisonId) {
-        Log.i(LOG_APP, "Comparison id = " + comparisonId);
+        Timber.tag(LOG_APP);
+        Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         getView().showLoading(true);
         if (comparisonId == null) {
@@ -35,7 +36,9 @@ public class AddEditComparisonPresenter extends BasePresenterImpl<AddEditCompari
                     .subscribeOn(schedulers.io())
                     .observeOn(schedulers.ui())
                     .subscribe(comparison -> {
-                        Log.i(LOG_APP, "Sending comparison to the view " + comparison);
+                        Timber.tag(LOG_APP);
+                        Timber.i("%s sending to %s, %s", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), comparison);
+
                         if (isViewAttached()) {
                             this.comparison = comparison;
                             getView().setComparison(comparison);
@@ -47,7 +50,9 @@ public class AddEditComparisonPresenter extends BasePresenterImpl<AddEditCompari
 
     @Override
     public void saveComparison(String newName) {
-        Log.i(LOG_APP, "New comparison name = [" + newName + "]");
+        Timber.tag(LOG_APP);
+        Timber.i("saving new %s name = %s", Comparison.class.getSimpleName(), newName);
+
         comparison.setName(newName);
         if (isNew) {
             addDisposable(repository.insertComparison(comparison)

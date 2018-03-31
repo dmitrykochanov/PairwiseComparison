@@ -54,6 +54,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_comparison_result, container, false);
         unbinder = ButterKnife.bind(this, view);
 
@@ -64,7 +65,10 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         chartResults.setEntryLabelTextSize(14f);
         chartResults.setDrawEntryLabels(true);
 
-        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        String comparisonId = null;
+        if (getArguments() != null) {
+            comparisonId = getArguments().getString(ARG_COMP_ID);
+        }
         presenter.start(comparisonId);
 
         return view;

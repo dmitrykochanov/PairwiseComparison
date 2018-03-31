@@ -1,11 +1,11 @@
 package com.dmko.pairwisecomparison.ui.screens.addeditoption;
 
-import android.util.Log;
-
 import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
+
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
@@ -22,8 +22,8 @@ public class AddEditOptionPresenter extends BasePresenterImpl<AddEditOptionContr
 
     @Override
     public void start(String comparisonId, String optionId) {
-        Log.i(LOG_APP, "Starting " + AddEditOptionPresenter.class.getSimpleName());
-        Log.i(LOG_APP, "Comparison id = " + comparisonId + ", option id = " + optionId);
+        Timber.tag(LOG_APP);
+        Timber.i("Starting %s with optionId = %s, comparisonId = %s", this.getClass().getSimpleName(), optionId, comparisonId);
 
         getView().showLoading(true);
         if (optionId == null) {
@@ -38,6 +38,9 @@ public class AddEditOptionPresenter extends BasePresenterImpl<AddEditOptionContr
                     .observeOn(schedulers.ui())
                     .subscribe(option -> {
                         if (isViewAttached()) {
+                            Timber.tag(LOG_APP);
+                            Timber.i("%s sending to %s, %s", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), option);
+
                             this.option = option;
                             getView().setOption(option);
                             getView().showLoading(false);
@@ -48,7 +51,9 @@ public class AddEditOptionPresenter extends BasePresenterImpl<AddEditOptionContr
 
     @Override
     public void saveOption(String optionName) {
-        Log.i(LOG_APP, "New option name = [" + optionName + "]");
+        Timber.tag(LOG_APP);
+        Timber.i("saving new %s name = %s", Option.class.getSimpleName(), optionName);
+
         option.setName(optionName);
         if (isNew) {
             addDisposable(optionsRepository.insertOption(option)

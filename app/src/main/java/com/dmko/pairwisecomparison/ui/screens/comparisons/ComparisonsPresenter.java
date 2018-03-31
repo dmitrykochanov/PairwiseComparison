@@ -1,13 +1,13 @@
 package com.dmko.pairwisecomparison.ui.screens.comparisons;
 
-import android.util.Log;
-
 import com.dmko.pairwisecomparison.data.entities.Comparison;
 import com.dmko.pairwisecomparison.data.repositories.ComparisonRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import java.util.Collections;
+
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
@@ -22,7 +22,9 @@ public class ComparisonsPresenter extends BasePresenterImpl<ComparisonsContract.
 
     @Override
     public void start() {
-        Log.i(LOG_APP, "Starting " + ComparisonsPresenter.class.getSimpleName());
+        Timber.tag(LOG_APP);
+        Timber.i("Starting %s", this.getClass().getSimpleName());
+
         getView().showLoading(true);
 
         addDisposable(repository.getComparisons()
@@ -30,7 +32,9 @@ public class ComparisonsPresenter extends BasePresenterImpl<ComparisonsContract.
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
                 .subscribe(comparisons -> {
-                    Log.i(LOG_APP, "Sending " + Comparison.class.getSimpleName() + "[" + comparisons.size() + "] to the view");
+                    Timber.tag(LOG_APP);
+                    Timber.i("%s sending to %s, %s[%d]", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), Comparison.class.getSimpleName(), comparisons.size());
+
                     if (isViewAttached()) {
                         getView().setComparisons(comparisons);
                         getView().showLoading(false);

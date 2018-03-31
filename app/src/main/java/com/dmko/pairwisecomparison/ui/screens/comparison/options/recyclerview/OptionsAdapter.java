@@ -3,7 +3,6 @@ package com.dmko.pairwisecomparison.ui.screens.comparison.options.recyclerview;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,6 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract
 
 import java.util.Collections;
 import java.util.List;
-
-import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
 public class OptionsAdapter extends RecyclerView.Adapter<OptionViewHolder> {
     private OptionsContract.Presenter presenter;
@@ -42,7 +39,6 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull OptionViewHolder holder, int position) {
         Option option = options.get(position);
-        Log.i(LOG_APP, "Binding " + option + " to the " + OptionViewHolder.class.getSimpleName());
         holder.bindOption(option);
     }
 

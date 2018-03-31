@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.SeekBar;
 
@@ -16,6 +15,7 @@ import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
@@ -44,7 +44,8 @@ public class OptionComparisonView extends ConstraintLayout {
     }
 
     public void init(OptionComparisonEntry entry) {
-        Log.i(LOG_APP, "Binding " + OptionComparisonEntry.class.getSimpleName() + " to " + OptionComparisonView.class.getSimpleName() + " " + entry);
+        Timber.tag(LOG_APP);
+        Timber.i("Binding %s to %s, %s", OptionComparisonEntry.class.getSimpleName(), OptionComparisonView.class.getSimpleName(), entry);
 
         buttonLeft.setText(entry.getFirstOption().getName());
         buttonRight.setText(entry.getSecondOption().getName());
@@ -97,13 +98,9 @@ public class OptionComparisonView extends ConstraintLayout {
             }
         });
 
-        buttonLeft.setOnClickListener(v -> {
-            centeredSeekBar.setProgress(0);
-        });
+        buttonLeft.setOnClickListener(v -> centeredSeekBar.setProgress(0));
 
-        buttonRight.setOnClickListener(v -> {
-            centeredSeekBar.setProgress(centeredSeekBar.getMax());
-        });
+        buttonRight.setOnClickListener(v -> centeredSeekBar.setProgress(centeredSeekBar.getMax()));
     }
 
     @SuppressLint("RestrictedApi")

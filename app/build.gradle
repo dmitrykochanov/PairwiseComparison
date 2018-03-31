@@ -45,4 +45,6 @@ dependencies {
     implementation libs.room_rx
 
     implementation libs.graphs
+
+    implementation libs.timber
 }

@@ -55,6 +55,7 @@ public class ComparisonsFragment extends BaseFragment implements ComparisonsCont
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_comparisons, container, false);
         unbinder = ButterKnife.bind(this, view);
 
@@ -96,6 +97,7 @@ public class ComparisonsFragment extends BaseFragment implements ComparisonsCont
         progressLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void showComparisonDialog(String comparisonId) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
@@ -119,6 +121,7 @@ public class ComparisonsFragment extends BaseFragment implements ComparisonsCont
         presenter.addComparisonSelected();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerComparisons.setLayoutManager(layoutManager);

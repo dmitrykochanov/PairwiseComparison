@@ -31,6 +31,7 @@ ext {
             rx_java_android_version          : "2.0.1",
             room_version                     : "1.0.0",
             mp_android_chart_version         : "v3.0.3",
+            timber_version                   : "4.7.0",
     ]
     libs = [
             support_appcompat        : "com.android.support:appcompat-v7:${versions.support_lib_version}",
@@ -47,6 +48,8 @@ ext {
             room                     : "android.arch.persistence.room:runtime:${versions.room_version}",
             room_ap                  : "android.arch.persistence.room:compiler:${versions.room_version}",
             room_rx                  : "android.arch.persistence.room:rxjava2:${versions.room_version}",
-            graphs                   : "com.github.PhilJay:MPAndroidChart:${versions.mp_android_chart_version}"
+            graphs                   : "com.github.PhilJay:MPAndroidChart:${versions.mp_android_chart_version}",
+            timber                   : "com.jakewharton.timber:timber:${versions.timber_version}",
     ]
 }
+
