@@ -52,6 +52,7 @@ public class ComparisonActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(comparisonName);
 
+
         fabAdd.hide();
         fabAdd.setOnClickListener(v -> {
             switch (viewPager.getCurrentItem()) {

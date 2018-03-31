@@ -11,11 +11,13 @@ public interface ComparisonResultContract {
 
         void showLoading(boolean isLoading);
 
-        void setResults(Map<Option, Integer> results);
+        void setResults(Map<Option, Integer> results, int chartType);
     }
 
     interface Presenter extends BasePresenter<View> {
 
         void start(String comparisonId);
+
+        void setChartType(int chartType);
     }
 }

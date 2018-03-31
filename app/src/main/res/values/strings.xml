@@ -24,4 +24,9 @@
     <string name="description_no_results">Add some options and compare them first</string>
     <string name="menu_licenses">Licenses</string>
     <string name="title_licenses">Licenses</string>
+
+    <string-array name="chart_types">
+        <item>Pie Chart</item>
+        <item>Bar Chart</item>
+    </string-array>
 </resources>

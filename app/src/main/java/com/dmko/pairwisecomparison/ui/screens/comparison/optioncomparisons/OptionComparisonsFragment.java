@@ -86,11 +86,11 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
     }
 
     public void saveChanges() {
-        Timber.tag(LOG_DATA);
-        Timber.i("Saving %s[%d]", OptionComparison.class.getSimpleName(), adapter.getOptionComparisons().size());
-
-        presenter.updateOptionComparisons(adapter.getOptionComparisons());
-
+        if (adapter != null) {
+            Timber.tag(LOG_DATA);
+            Timber.i("Saving %s[%d]", OptionComparison.class.getSimpleName(), adapter.getOptionComparisons().size());
+            presenter.updateOptionComparisons(adapter.getOptionComparisons());
+        }
     }
 
     public void onFabAddClicked() {

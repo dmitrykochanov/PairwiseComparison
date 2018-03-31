@@ -1,6 +1,7 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult;
 
 import com.dmko.pairwisecomparison.data.entities.Option;
+import com.dmko.pairwisecomparison.data.entities.OptionCompareResultEntry;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
@@ -9,6 +10,9 @@ import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
@@ -16,10 +20,12 @@ import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResultContract.View> implements ComparisonResultContract.Presenter {
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
+    private PublishSubject<Integer> chartTypeSubject;
 
     public ComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
         this.schedulers = schedulers;
         this.optionsRepository = optionsRepository;
+        chartTypeSubject = PublishSubject.create();
     }
 
     @Override
@@ -28,7 +34,8 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
         Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         getView().showLoading(true);
-        addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
+
+        Flowable<Map<Option, Integer>> calculatedResultsFlowable = optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .subscribeOn(schedulers.io())
                 .map(optionComparisonEntries -> {
                     Timber.tag(LOG_APP);
@@ -43,7 +50,7 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
                         Option key = entry.getProgress() < 0 ? entry.getFirstOption() : entry.getSecondOption();
 
                         Integer currentProgress = results.get(key);
-                        if(currentProgress == null) {
+                        if (currentProgress == null) {
                             currentProgress = 0;
                         }
                         currentProgress += Math.abs(entry.getProgress());
@@ -62,16 +69,21 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
                         }
                     }
                     return results;
-                })
-                .observeOn(schedulers.ui())
-                .subscribe(optionResults -> {
-                    Timber.tag(LOG_APP);
-                    Timber.i("%s sending to %s, %s[%d]", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), Option.class.getSimpleName(), optionResults.size());
+                });
 
-                    if (isViewAttached()) {
-                        getView().setResults(optionResults);
-                        getView().showLoading(false);
-                    }
+        Flowable<Integer> chartTypeFlowable = chartTypeSubject.toFlowable(BackpressureStrategy.BUFFER);
+
+        addDisposable(Flowable.combineLatest(calculatedResultsFlowable, chartTypeFlowable, OptionCompareResultEntry::new)
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.ui())
+                .subscribe(results -> {
+                    getView().showLoading(false);
+                    getView().setResults(results.getResults(), results.getChartType());
                 }));
+    }
+
+    @Override
+    public void setChartType(int chartType) {
+        chartTypeSubject.onNext(chartType);
     }
 }
