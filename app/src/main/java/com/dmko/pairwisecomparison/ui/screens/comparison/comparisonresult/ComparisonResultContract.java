@@ -12,6 +12,8 @@ public interface ComparisonResultContract {
         void showLoading(boolean isLoading);
 
         void setResults(Map<Option, Integer> results, int chartType);
+
+        void saveChart(int chartType);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -19,5 +21,7 @@ public interface ComparisonResultContract {
         void start(String comparisonId);
 
         void setChartType(int chartType);
+
+        void saveChartSelected(int chartType);
     }
 }

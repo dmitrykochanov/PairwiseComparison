@@ -1,9 +1,15 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +21,8 @@ import android.widget.TextView;
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseFragment;
+import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.recyclerview.ComparisonResultAdapter;
+import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.spinner.ChartTypesAdapter;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.BarData;
@@ -26,31 +34,30 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
-import static com.github.mikephil.charting.utils.ColorTemplate.rgb;
-
 public class ComparisonResultFragment extends BaseFragment implements ComparisonResultContract.View {
-    private static final int[] MATERIAL_COLORS = {
-            rgb("#4CAF50"), rgb("#FF5722"), rgb("#FFC107"),
-            rgb("#F44336"), rgb("#2196F3"), rgb("#FF9800"),
-            rgb("#009688"), rgb("#CDDC39"), rgb("#607D8B")
-    };
     private static final String ARG_COMP_ID = "comp_id";
+    private static final String ARG_COMP_NAME = "comp_name";
+    private static final int WRITE_EXTERNAL_STORAGE_CODE = 0;
     private static final int PIE_CHART = 0;
     private static final int BAR_CHART = 1;
+    private static final int LIST = 2;
 
     @BindView(R.id.progress_loading) ProgressBar progressLoading;
     @BindView(R.id.chart_pie_results) PieChart pieChartResults;
@@ -58,9 +65,14 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     @BindView(R.id.text_empty_title) TextView textEmptyTitle;
     @BindView(R.id.text_empty_description) TextView textEmptyDescription;
     @BindView(R.id.spinner_chart_types) Spinner spinnerChartTypes;
+    @BindView(R.id.recycler_comparison_results) RecyclerView recyclerResults;
+    @BindArray(R.array.chart_types) String[] chartTypes;
 
     @Inject ComparisonResultContract.Presenter presenter;
+    @Inject ComparisonResultAdapter adapter;
 
+    private ChartTypesAdapter spinnerAdapter;
+    private String comparisonName;
     private Unbinder unbinder;
 
     @Override
@@ -87,7 +99,6 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         pieChartResults.setDescription(null);
         pieChartResults.getLegend().setEnabled(false);
 
-
         barChartResults.setVisibility(View.GONE);
         barChartResults.setDescription(null);
         barChartResults.getLegend().setEnabled(false);
@@ -102,17 +113,16 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         barChartResults.getXAxis().setDrawAxisLine(false);
         barChartResults.getAxisLeft().setAxisMinimum(0);
 
+        recyclerResults.setVisibility(View.GONE);
+        recyclerResults.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerResults.setAdapter(adapter);
+
+        spinnerAdapter = new ChartTypesAdapter(getContext(), R.layout.item_chart_type, Arrays.asList(chartTypes), presenter);
+        spinnerChartTypes.setAdapter(spinnerAdapter);
         spinnerChartTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                switch (pos) {
-                    case PIE_CHART:
-                        presenter.setChartType(PIE_CHART);
-                        break;
-                    case BAR_CHART:
-                        presenter.setChartType(BAR_CHART);
-                        break;
-                }
+            public void onItemSelected(AdapterView<?> adapterView, View view, int chartType, long id) {
+                presenter.setChartType(chartType);
             }
 
             @Override
@@ -124,6 +134,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         String comparisonId = null;
         if (getArguments() != null) {
             comparisonId = getArguments().getString(ARG_COMP_ID);
+            comparisonName = getArguments().getString(ARG_COMP_NAME);
         }
         presenter.start(comparisonId);
 
@@ -144,6 +155,15 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == WRITE_EXTERNAL_STORAGE_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            saveChart(spinnerChartTypes.getSelectedItemPosition());
+        }
+    }
+
+    @Override
     public void showLoading(boolean isLoading) {
         progressLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
@@ -154,15 +174,17 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         if (results.size() == 0) {
             pieChartResults.setVisibility(View.GONE);
             barChartResults.setVisibility(View.GONE);
+            spinnerChartTypes.setVisibility(View.GONE);
+            recyclerResults.setVisibility(View.GONE);
             textEmptyTitle.setVisibility(View.VISIBLE);
             textEmptyDescription.setVisibility(View.VISIBLE);
-            spinnerChartTypes.setVisibility(View.GONE);
 
         } else if (chartType == PIE_CHART) {
             textEmptyTitle.setVisibility(View.GONE);
             textEmptyDescription.setVisibility(View.GONE);
-            spinnerChartTypes.setVisibility(View.VISIBLE);
             barChartResults.setVisibility(View.GONE);
+            recyclerResults.setVisibility(View.GONE);
+            spinnerChartTypes.setVisibility(View.VISIBLE);
             pieChartResults.setVisibility(View.VISIBLE);
 
             setupPieChart(results);
@@ -170,34 +192,59 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         } else if (chartType == BAR_CHART) {
             textEmptyTitle.setVisibility(View.GONE);
             textEmptyDescription.setVisibility(View.GONE);
-            spinnerChartTypes.setVisibility(View.VISIBLE);
             pieChartResults.setVisibility(View.GONE);
+            recyclerResults.setVisibility(View.GONE);
+            spinnerChartTypes.setVisibility(View.VISIBLE);
             barChartResults.setVisibility(View.VISIBLE);
 
             setupBarChart(results);
+        } else if (chartType == LIST) {
+            textEmptyTitle.setVisibility(View.GONE);
+            textEmptyDescription.setVisibility(View.GONE);
+            pieChartResults.setVisibility(View.GONE);
+            barChartResults.setVisibility(View.GONE);
+            spinnerChartTypes.setVisibility(View.VISIBLE);
+            recyclerResults.setVisibility(View.VISIBLE);
+
+            setupList(results);
         }
     }
 
-    public static ComparisonResultFragment newInstance(String comparisonId) {
-        Bundle args = new Bundle();
-        args.putString(ARG_COMP_ID, comparisonId);
-        ComparisonResultFragment fragment = new ComparisonResultFragment();
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void saveChart(int chartType) {
+        switch (chartType) {
+            case PIE_CHART:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CODE);
+                } else {
+                    pieChartResults.saveToGallery(comparisonName + " pie chart " + System.currentTimeMillis(), 100);
+                    Snackbar.make(spinnerChartTypes, R.string.snackbar_pie_chart_saved, Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case BAR_CHART:
+                barChartResults.saveToGallery(comparisonName + " bar chart " + System.currentTimeMillis(), 100);
+                Snackbar.make(spinnerChartTypes, R.string.snackbar_bar_chart_saved, Snackbar.LENGTH_LONG).show();
+                break;
+            case LIST:
+                //TODO save list
+                break;
+        }
     }
 
     private void setupPieChart(Map<Option, Integer> results) {
         List<PieEntry> pieEntries = new ArrayList<>(results.size());
         for (Option option : results.keySet()) {
-            pieEntries.add(new PieEntry(results.get(option), option.getName()));
+            int progress = results.get(option);
+            if (progress != 0) {
+                pieEntries.add(new PieEntry(progress, option.getName()));
+            }
         }
         Collections.sort(pieEntries, (p1, p2) -> Float.compare(p1.getValue(), p2.getValue()));
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "");
-        dataSet.setColors(MATERIAL_COLORS);
+        dataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-
 
         PieData pieData = new PieData(dataSet);
         pieData.setValueFormatter(new PercentFormatter());
@@ -220,7 +267,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         }
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "");
-        barDataSet.setColors(MATERIAL_COLORS);
+        barDataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
         barDataSet.setDrawValues(true);
 
         BarData barData = new BarData(barDataSet);
@@ -238,5 +285,20 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         barData.setValueTextColor(Color.BLACK);
         barChartResults.setData(barData);
         barChartResults.animateY(500);
+    }
+
+    private void setupList(Map<Option, Integer> results) {
+        List<Map.Entry<Option, Integer>> entries = new ArrayList<>(results.entrySet());
+        Collections.sort(entries, Collections.reverseOrder((e1, e2) -> e1.getValue().compareTo(e2.getValue())));
+        adapter.setResults(entries);
+    }
+
+    public static ComparisonResultFragment newInstance(String comparisonId, String comparisonName) {
+        Bundle args = new Bundle();
+        args.putString(ARG_COMP_ID, comparisonId);
+        args.putString(ARG_COMP_NAME, comparisonName);
+        ComparisonResultFragment fragment = new ComparisonResultFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

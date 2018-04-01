@@ -2,6 +2,7 @@ package com.dmko.pairwisecomparison.injection.controller;
 
 
 import com.dmko.pairwisecomparison.injection.scopes.ControllerScope;
+import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.recyclerview.ComparisonResultAdapter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.recyclerview.OptionComparisonsAdapter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract;
@@ -31,5 +32,11 @@ public class ControllerModule {
     @ControllerScope
     public OptionComparisonsAdapter provideOptionComparisonsAdapter(OptionComparisonsContract.Presenter presenter) {
         return new OptionComparisonsAdapter(presenter);
+    }
+
+    @Provides
+    @ControllerScope
+    public ComparisonResultAdapter provideComparisonResultAdapter() {
+        return new ComparisonResultAdapter();
     }
 }

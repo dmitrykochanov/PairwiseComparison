@@ -24,9 +24,12 @@
     <string name="description_no_results">Add some options and compare them first</string>
     <string name="menu_licenses">Licenses</string>
     <string name="title_licenses">Licenses</string>
+    <string name="snackbar_pie_chart_saved">Pie chart image saved to the gallery</string>
+    <string name="snackbar_bar_chart_saved">Bar chart image saved to the gallery</string>
 
     <string-array name="chart_types">
         <item>Pie Chart</item>
         <item>Bar Chart</item>
+        <item>List</item>
     </string-array>
 </resources>

@@ -43,16 +43,16 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
 
                     Map<Option, Integer> results = new HashMap<>();
                     for (OptionComparisonEntry entry : optionComparisonEntries) {
-                        if (entry.getProgress() == 0) {
-                            continue;
+                        if (!results.containsKey(entry.getFirstOption())) {
+                            results.put(entry.getFirstOption(), 0);
+                        }
+                        if (!results.containsKey(entry.getSecondOption())) {
+                            results.put(entry.getSecondOption(), 0);
                         }
 
                         Option key = entry.getProgress() < 0 ? entry.getFirstOption() : entry.getSecondOption();
 
                         Integer currentProgress = results.get(key);
-                        if (currentProgress == null) {
-                            currentProgress = 0;
-                        }
                         currentProgress += Math.abs(entry.getProgress());
                         results.put(key, currentProgress);
                     }
@@ -85,5 +85,10 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
     @Override
     public void setChartType(int chartType) {
         chartTypeSubject.onNext(chartType);
+    }
+
+    @Override
+    public void saveChartSelected(int chartType) {
+        getView().saveChart(chartType);
     }
 }

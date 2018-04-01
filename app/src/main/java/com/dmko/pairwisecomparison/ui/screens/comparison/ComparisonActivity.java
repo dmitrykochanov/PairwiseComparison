@@ -44,7 +44,7 @@ public class ComparisonActivity extends AppCompatActivity {
 
         String comparisonId = getIntent().getStringExtra(EXTRA_COMP_ID);
         String comparisonName = getIntent().getStringExtra(EXTRA_COMP_NAME);
-        comparisonResultFragment = ComparisonResultFragment.newInstance(comparisonId);
+        comparisonResultFragment = ComparisonResultFragment.newInstance(comparisonId, comparisonName);
         optionsFragment = OptionsFragment.newInstance(comparisonId);
         optionComparisonsFragment = OptionComparisonsFragment.newInstance(comparisonId);
 
