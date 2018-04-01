@@ -67,6 +67,8 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
                             int progressPercentage = Math.round((float) results.get(option) / progressSum * 100);
                             results.put(option, progressPercentage);
                         }
+                    } else {
+                        results.clear();
                     }
                     return results;
                 });

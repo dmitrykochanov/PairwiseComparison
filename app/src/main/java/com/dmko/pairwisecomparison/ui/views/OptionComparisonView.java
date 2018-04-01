@@ -98,9 +98,21 @@ public class OptionComparisonView extends ConstraintLayout {
             }
         });
 
-        buttonLeft.setOnClickListener(v -> centeredSeekBar.setProgress(0));
+        buttonLeft.setOnClickListener(v -> {
+            if (centeredSeekBar.getProgress() != 0) {
+                centeredSeekBar.setProgress(0);
+            } else {
+                centeredSeekBar.setProgress(MAX_PROGRESS);
+            }
+        });
 
-        buttonRight.setOnClickListener(v -> centeredSeekBar.setProgress(centeredSeekBar.getMax()));
+        buttonRight.setOnClickListener(v -> {
+            if (centeredSeekBar.getProgress() != MAX_PROGRESS * 2) {
+                centeredSeekBar.setProgress(centeredSeekBar.getMax());
+            } else {
+                centeredSeekBar.setProgress(MAX_PROGRESS);
+            }
+        });
     }
 
     @SuppressLint("RestrictedApi")

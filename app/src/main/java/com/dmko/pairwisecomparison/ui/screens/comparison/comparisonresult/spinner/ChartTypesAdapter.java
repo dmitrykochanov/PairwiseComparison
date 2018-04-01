@@ -17,16 +17,14 @@ import java.util.List;
 
 public class ChartTypesAdapter extends ArrayAdapter<String> {
     private LayoutInflater inflater;
-    private int resource;
     private List<String> items;
     private ComparisonResultContract.Presenter presenter;
 
 
-    public ChartTypesAdapter(@NonNull Context context, int resource, List<String> items, ComparisonResultContract.Presenter presenter) {
-        super(context, resource, items);
+    public ChartTypesAdapter(@NonNull Context context, List<String> items, ComparisonResultContract.Presenter presenter) {
+        super(context, R.layout.item_chart_type, items);
         inflater = LayoutInflater.from(context);
         this.items = items;
-        this.resource = resource;
         this.presenter = presenter;
     }
 
@@ -43,7 +41,7 @@ public class ChartTypesAdapter extends ArrayAdapter<String> {
     }
 
     private View createItemView(int position, @Nullable View convertView, @NonNull ViewGroup parent, boolean isSaveEnabled) {
-        View view = inflater.inflate(resource, parent, false);
+        View view = inflater.inflate(R.layout.item_chart_type, parent, false);
 
         TextView textName = view.findViewById(R.id.text_name);
         ImageView imageSave = view.findViewById(R.id.image_save);

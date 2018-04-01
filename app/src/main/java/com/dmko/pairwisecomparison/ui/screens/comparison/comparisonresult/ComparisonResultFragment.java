@@ -38,14 +38,12 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -66,12 +64,11 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     @BindView(R.id.text_empty_description) TextView textEmptyDescription;
     @BindView(R.id.spinner_chart_types) Spinner spinnerChartTypes;
     @BindView(R.id.recycler_comparison_results) RecyclerView recyclerResults;
-    @BindArray(R.array.chart_types) String[] chartTypes;
 
     @Inject ComparisonResultContract.Presenter presenter;
     @Inject ComparisonResultAdapter adapter;
+    @Inject ChartTypesAdapter spinnerAdapter;
 
-    private ChartTypesAdapter spinnerAdapter;
     private String comparisonName;
     private Unbinder unbinder;
 
@@ -117,7 +114,6 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         recyclerResults.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerResults.setAdapter(adapter);
 
-        spinnerAdapter = new ChartTypesAdapter(getContext(), R.layout.item_chart_type, Arrays.asList(chartTypes), presenter);
         spinnerChartTypes.setAdapter(spinnerAdapter);
         spinnerChartTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
