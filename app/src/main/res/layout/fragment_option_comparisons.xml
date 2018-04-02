@@ -19,14 +19,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_option_comparisons"
+    <Spinner
+        android:id="@+id/spinner_filter_types"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_option_comparisons"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_filter_types" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_empty_title"
@@ -36,15 +48,15 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textSize="20sp"
+        android:text="@string/title_no_option_comparisons"
         android:textColor="@android:color/black"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/text_empty_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:text="@string/title_no_option_comparisons" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_empty_description"
@@ -53,12 +65,12 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:text="@string/description_no_option_comparisons"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_empty_title"
-        android:text="@string/description_no_option_comparisons" />
+        app:layout_constraintTop_toBottomOf="@+id/text_empty_title" />
 
 </android.support.constraint.ConstraintLayout>

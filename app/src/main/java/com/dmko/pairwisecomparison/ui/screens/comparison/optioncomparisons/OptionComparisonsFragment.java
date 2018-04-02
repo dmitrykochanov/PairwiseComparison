@@ -12,14 +12,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseFragment;
 import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionDialog;
+import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.filters.AllFilter;
+import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.filters.OptionComparisonEntryFilter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.recyclerview.OptionComparisonsAdapter;
+import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.spinnerfilter.FilterTypesAdapter;
 
 import java.util.List;
 
@@ -37,9 +42,11 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
     @BindView(R.id.progress_loading) ProgressBar progressLoading;
     @BindView(R.id.text_empty_title) TextView textEmptyTitle;
     @BindView(R.id.text_empty_description) TextView textEmptyDescription;
+    @BindView(R.id.spinner_filter_types) Spinner spinnerFilterTypes;
 
     @Inject OptionComparisonsContract.Presenter presenter;
-    @Inject OptionComparisonsAdapter adapter;
+    @Inject OptionComparisonsAdapter adapterOptionComparisons;
+    @Inject FilterTypesAdapter adapterFilterTypes;
 
     private Unbinder unbinder;
 
@@ -63,6 +70,20 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
             comparisonId = getArguments().getString(ARG_COMP_ID);
         }
         setupRecyclerView();
+        spinnerFilterTypes.setAdapter(adapterFilterTypes);
+        spinnerFilterTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                OptionComparisonEntryFilter filter = (OptionComparisonEntryFilter) adapterView.getItemAtPosition(pos);
+                presenter.setFilter(filter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         presenter.start(comparisonId);
 
         return view;
@@ -97,10 +118,21 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
             textEmptyTitle.setVisibility(View.VISIBLE);
             textEmptyDescription.setVisibility(View.VISIBLE);
         } else {
-            adapter.setOptionComparisons(optionComparisons);
+            adapterOptionComparisons.setOptionComparisons(optionComparisons);
             recyclerOptionComparisons.setVisibility(View.VISIBLE);
             textEmptyTitle.setVisibility(View.GONE);
             textEmptyDescription.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setFilterTypes(List<OptionComparisonEntryFilter> filters) {
+        if (filters.size() == 2) {
+            spinnerFilterTypes.setVisibility(View.GONE);
+            presenter.setFilter(new AllFilter());
+        } else {
+            spinnerFilterTypes.setVisibility(View.VISIBLE);
+            adapterFilterTypes.setFilterTypes(filters);
         }
     }
 
@@ -122,7 +154,7 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerOptionComparisons.setLayoutManager(layoutManager);
-        recyclerOptionComparisons.setAdapter(adapter);
+        recyclerOptionComparisons.setAdapter(adapterOptionComparisons);
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
         recyclerOptionComparisons.addItemDecoration(itemDecoration);
