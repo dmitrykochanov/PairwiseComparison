@@ -80,11 +80,6 @@ public class OptionComparisonView extends ConstraintLayout {
                     highlightButton(buttonLeft, true);
                     highlightButton(buttonRight, true);
                 }
-
-                if (onSeekBarChangeListener != null) {
-                    int optionProgress = progress - centeredSeekBar.getMax() / 2;
-                    onSeekBarChangeListener.onProgressChanged(seekBar, optionProgress, b);
-                }
             }
 
             @Override
@@ -94,25 +89,35 @@ public class OptionComparisonView extends ConstraintLayout {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                notifyProgressChanged();
             }
         });
 
         buttonLeft.setOnClickListener(v -> {
             if (centeredSeekBar.getProgress() != 0) {
                 centeredSeekBar.setProgress(0);
+                notifyProgressChanged();
             } else {
                 centeredSeekBar.setProgress(MAX_PROGRESS);
+                notifyProgressChanged();
             }
         });
 
         buttonRight.setOnClickListener(v -> {
             if (centeredSeekBar.getProgress() != MAX_PROGRESS * 2) {
                 centeredSeekBar.setProgress(centeredSeekBar.getMax());
+                notifyProgressChanged();
             } else {
                 centeredSeekBar.setProgress(MAX_PROGRESS);
+                notifyProgressChanged();
             }
         });
+    }
+
+    private void notifyProgressChanged() {
+        if (onSeekBarChangeListener != null) {
+            onSeekBarChangeListener.onStopTrackingTouch(centeredSeekBar);
+        }
     }
 
     @SuppressLint("RestrictedApi")

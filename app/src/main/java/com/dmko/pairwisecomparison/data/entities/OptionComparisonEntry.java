@@ -69,7 +69,7 @@ public class OptionComparisonEntry implements Comparable<OptionComparisonEntry> 
 
         OptionComparisonEntry entry = (OptionComparisonEntry) o;
 
-        return id != null ? id.equals(entry.id) : entry.id == null;
+        return id.equals(entry.id) && firstOption.equals(entry.firstOption) && secondOption.equals(entry.secondOption);
     }
 
     @Override

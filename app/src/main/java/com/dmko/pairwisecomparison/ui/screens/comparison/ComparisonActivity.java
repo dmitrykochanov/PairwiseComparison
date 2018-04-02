@@ -108,16 +108,10 @@ public class ComparisonActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 switch (position) {
                     case 1:
-                        if (lastPosition == 2) {
-                            optionComparisonsFragment.saveChanges();
-                        }
                     case 2:
                         fabAdd.show();
                         break;
                     case 0:
-                        if (lastPosition == 2) {
-                            optionComparisonsFragment.saveChanges();
-                        }
                         appBar.setExpanded(true);
                     default:
                         fabAdd.hide();
@@ -127,14 +121,6 @@ public class ComparisonActivity extends AppCompatActivity {
         });
 
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (lastPosition == 2 && optionComparisonsFragment != null) {
-            optionComparisonsFragment.saveChanges();
-        }
     }
 
     public static Intent getIntent(Context context, String comparisonId, String comparisonName) {

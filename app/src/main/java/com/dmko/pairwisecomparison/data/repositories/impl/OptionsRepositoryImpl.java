@@ -41,7 +41,7 @@ public class OptionsRepositoryImpl implements OptionsRepository {
         return optionsDao.getOptionById(optionId)
                 .doOnNext(option -> {
                     Timber.tag(LOG_DATA);
-                    Timber.i("Retrieving %s", option.toString());
+                    Timber.i("Retrieving %s", option);
                 });
     }
 
@@ -50,13 +50,13 @@ public class OptionsRepositoryImpl implements OptionsRepository {
         return new CompletableFromAction(() -> {
             List<Option> options = optionsDao.getOptionsByComparisonId(option.getComparisonId()).blockingFirst();
             Timber.tag(LOG_DATA);
-            Timber.i("Retrieving %s", option.toString());
+            Timber.i("Retrieving %s", option);
 
             List<OptionComparison> optionComparisons = new ArrayList<>();
             for (Option o : options) {
                 OptionComparison optionComparison = new OptionComparison(option.getId(), o.getId(), 0);
                 Timber.tag(LOG_DATA);
-                Timber.i("Retrieving %s", optionComparison.toString());
+                Timber.i("Retrieving %s", optionComparison);
                 optionComparisons.add(optionComparison);
             }
             Timber.tag(LOG_DATA);
@@ -70,7 +70,7 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     public Completable updateOption(Option option) {
         return new CompletableFromAction(() -> {
             Timber.tag(LOG_DATA);
-            Timber.i("Updating %s", option.toString());
+            Timber.i("Updating %s", option);
             optionsDao.updateOption(option);
         });
     }
@@ -79,7 +79,7 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     public Completable deleteOption(Option option) {
         return new CompletableFromAction(() -> {
             Timber.tag(LOG_DATA);
-            Timber.i("Deleting %s", option.toString());
+            Timber.i("Deleting %s", option);
             optionsDao.deleteOption(option);
         });
     }
@@ -94,24 +94,19 @@ public class OptionsRepositoryImpl implements OptionsRepository {
     }
 
     @Override
-    public Completable updateOptionComparisons(List<OptionComparisonEntry> optionComparisonEntries) {
+    public Completable updateOptionComparison(OptionComparisonEntry entry) {
         return new CompletableFromAction(() -> {
-            List<OptionComparison> optionComparisons = new ArrayList<>(optionComparisonEntries.size());
-            for (OptionComparisonEntry entry : optionComparisonEntries) {
-                Timber.tag(LOG_DATA);
-                Timber.i("Creating %s from %s", OptionComparison.class.getSimpleName(), entry.toString());
 
-                OptionComparison optionComparison = new OptionComparison();
-                optionComparison.setId(entry.getId());
-                optionComparison.setFirstOptionId(entry.getFirstOption().getId());
-                optionComparison.setSecondOptionId(entry.getSecondOption().getId());
-                optionComparison.setProgress(entry.getProgress());
+            OptionComparison optionComparison = new OptionComparison();
+            optionComparison.setId(entry.getId());
+            optionComparison.setFirstOptionId(entry.getFirstOption().getId());
+            optionComparison.setSecondOptionId(entry.getSecondOption().getId());
+            optionComparison.setProgress(entry.getProgress());
 
-                optionComparisons.add(optionComparison);
-            }
             Timber.tag(LOG_DATA);
-            Timber.i("Updating %s[%d]", OptionComparison.class.getSimpleName(), optionComparisons.size());
-            optionsDao.updateOptionComparisons(optionComparisons.toArray(new OptionComparison[optionComparisons.size()]));
+            Timber.i("Updating %s", optionComparison);
+
+            optionsDao.updateOptionComparison(optionComparison);
         });
     }
 }

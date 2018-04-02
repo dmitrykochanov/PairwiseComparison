@@ -23,5 +23,5 @@ public interface OptionsRepository {
 
     Flowable<List<OptionComparisonEntry>> getOptionComparisonEntriesByComparisonId(String comparisonId);
 
-    Completable updateOptionComparisons(List<OptionComparisonEntry> optionComparisons);
+    Completable updateOptionComparison(OptionComparisonEntry optionComparison);
 }

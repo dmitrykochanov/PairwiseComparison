@@ -32,6 +32,7 @@ public class OptionComparisonsPresenter extends BasePresenterImpl<OptionComparis
         getView().showLoading(true);
         addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .doOnNext(Collections::sort)
+                .distinctUntilChanged()
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
                 .subscribe(optionComparisons -> {
@@ -46,8 +47,8 @@ public class OptionComparisonsPresenter extends BasePresenterImpl<OptionComparis
     }
 
     @Override
-    public void updateOptionComparisons(List<OptionComparisonEntry> optionComparisons) {
-        addDisposable(optionsRepository.updateOptionComparisons(optionComparisons)
+    public void updateOptionComparison(OptionComparisonEntry optionComparison) {
+        addDisposable(optionsRepository.updateOptionComparison(optionComparison)
                 .subscribeOn(schedulers.io())
                 .subscribe());
     }

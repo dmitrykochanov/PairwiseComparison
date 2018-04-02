@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dmko.pairwisecomparison.R;
-import com.dmko.pairwisecomparison.data.entities.OptionComparison;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseFragment;
 import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionDialog;
@@ -29,9 +28,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
-
-import static com.dmko.pairwisecomparison.utils.LogTags.LOG_DATA;
 
 public class OptionComparisonsFragment extends BaseFragment implements OptionComparisonsContract.View {
     private static final String TAG_DIALOG = "dialog";
@@ -85,14 +81,6 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
         presenter.detachView();
     }
 
-    public void saveChanges() {
-        if (adapter != null) {
-            Timber.tag(LOG_DATA);
-            Timber.i("Saving %s[%d]", OptionComparison.class.getSimpleName(), adapter.getOptionComparisons().size());
-            presenter.updateOptionComparisons(adapter.getOptionComparisons());
-        }
-    }
-
     public void onFabAddClicked() {
         presenter.onAddOptionSelected();
     }
@@ -119,7 +107,6 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
     @SuppressWarnings("ConstantConditions")
     @Override
     public void showOptionDialog(String comparisonId) {
-        saveChanges();
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag(TAG_DIALOG);
         if (prev != null) {

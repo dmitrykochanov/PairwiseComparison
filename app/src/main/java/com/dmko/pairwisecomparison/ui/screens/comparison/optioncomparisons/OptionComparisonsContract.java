@@ -18,7 +18,7 @@ public interface OptionComparisonsContract {
     interface Presenter extends BasePresenter<View> {
         void start(String comparisonId);
 
-        void updateOptionComparisons(List<OptionComparisonEntry> optionComparisons);
+        void updateOptionComparison(OptionComparisonEntry optionComparison);
 
         void onAddOptionSelected();
     }

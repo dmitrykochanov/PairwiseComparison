@@ -24,19 +24,19 @@ public class OptionComparisonViewHolder extends RecyclerView.ViewHolder {
         optionComparisonView.setOnProgressChangedListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                if (optionComparison != null) {
-                    optionComparison.setProgress(progress);
-                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                if (optionComparison != null) {
+                    int optionProgress = seekBar.getProgress() - seekBar.getMax() / 2;
+                    optionComparison.setProgress(optionProgress);
+                    presenter.updateOptionComparison(optionComparison);
+                }
             }
         });
     }
