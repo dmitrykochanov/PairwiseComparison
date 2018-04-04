@@ -34,7 +34,6 @@ public class ComparisonActivity extends AppCompatActivity {
     ComparisonResultFragment comparisonResultFragment;
     OptionsFragment optionsFragment;
     OptionComparisonsFragment optionComparisonsFragment;
-    private int lastPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,16 +106,15 @@ public class ComparisonActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 switch (position) {
+                    case 0:
+                        appBar.setExpanded(true);
+                        fabAdd.hide();
+                        break;
                     case 1:
                     case 2:
                         fabAdd.show();
                         break;
-                    case 0:
-                        appBar.setExpanded(true);
-                    default:
-                        fabAdd.hide();
                 }
-                lastPosition = position;
             }
         });
 
