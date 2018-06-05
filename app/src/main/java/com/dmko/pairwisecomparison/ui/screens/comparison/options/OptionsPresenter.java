@@ -64,4 +64,12 @@ public class OptionsPresenter extends BasePresenterImpl<OptionsContract.View> im
                 .observeOn(schedulers.ui())
                 .subscribe());
     }
+
+    @Override
+    public void addOption(String optionName) {
+        Option option = new Option(comparisonId, optionName);
+        addDisposable(optionsRepository.insertOption(option)
+                .subscribeOn(schedulers.io())
+                .subscribe());
+    }
 }

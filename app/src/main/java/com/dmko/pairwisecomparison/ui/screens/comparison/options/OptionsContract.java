@@ -26,5 +26,6 @@ public interface OptionsContract {
 
         void deleteOptionSelected(Option option);
 
+        void addOption(String optionName);
     }
 }

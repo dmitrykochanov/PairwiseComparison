@@ -13,6 +13,7 @@ public interface AddEditOptionContract {
     }
 
     interface Presenter extends BasePresenter<View> {
+
         void start(String comparisonId, String optionId);
 
         void saveOption(String optionName);
