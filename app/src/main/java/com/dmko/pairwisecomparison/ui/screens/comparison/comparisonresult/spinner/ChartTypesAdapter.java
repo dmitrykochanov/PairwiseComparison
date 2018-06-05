@@ -45,7 +45,7 @@ public class ChartTypesAdapter extends ArrayAdapter<String> {
 
         TextView textName = view.findViewById(R.id.text_name);
         ImageView imageSave = view.findViewById(R.id.image_save);
-        imageSave.setVisibility(isSaveEnabled && position != 2 ? View.VISIBLE : View.GONE);
+        imageSave.setVisibility(isSaveEnabled ? View.VISIBLE : View.GONE);
 
         textName.setText(items.get(position));
         imageSave.setOnClickListener(v -> {

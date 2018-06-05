@@ -4,6 +4,7 @@ import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.ui.base.mvp.BasePresenter;
 import com.dmko.pairwisecomparison.ui.base.mvp.BaseView;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ComparisonResultContract {
@@ -23,5 +24,7 @@ public interface ComparisonResultContract {
         void setChartType(int chartType);
 
         void saveChartSelected(int chartType);
+
+        String convertResultsToText(List<Map.Entry<Option, Integer>> results);
     }
 }

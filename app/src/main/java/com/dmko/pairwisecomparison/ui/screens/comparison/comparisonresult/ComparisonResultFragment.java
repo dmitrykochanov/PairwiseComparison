@@ -1,6 +1,9 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -230,7 +233,10 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
                 }
                 break;
             case LIST:
-                //TODO save list
+                String results = presenter.convertResultsToText(adapter.getResults());
+                ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(ClipData.newPlainText("Comparison results", results));
+                Snackbar.make(spinnerChartTypes, R.string.snackbar_list_saved, Snackbar.LENGTH_LONG).show();
                 break;
         }
     }

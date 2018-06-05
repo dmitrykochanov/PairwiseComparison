@@ -8,6 +8,7 @@ import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.BackpressureStrategy;
@@ -92,5 +93,15 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
     @Override
     public void saveChartSelected(int chartType) {
         getView().saveChart(chartType);
+    }
+
+    @Override
+    public String convertResultsToText(List<Map.Entry<Option, Integer>> results) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<Option, Integer> entry : results) {
+            String optionResult = String.format("%s(%s%%)\n", entry.getKey().getName(), entry.getValue());
+            stringBuilder.append(optionResult);
+        }
+        return stringBuilder.toString();
     }
 }

@@ -25,6 +25,10 @@ public class ComparisonResultAdapter extends RecyclerView.Adapter<ComparisonResu
         notifyDataSetChanged();
     }
 
+    public List<Map.Entry<Option, Integer>> getResults() {
+        return results;
+    }
+
     @NonNull
     @Override
     public ComparisonResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
