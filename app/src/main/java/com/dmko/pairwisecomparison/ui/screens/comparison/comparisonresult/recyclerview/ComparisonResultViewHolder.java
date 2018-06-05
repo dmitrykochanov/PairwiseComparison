@@ -13,7 +13,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ComparisonResultViewHolder extends RecyclerView.ViewHolder {
+
     @BindView(R.id.text_comparison_result) TextView textComparisonResult;
+    @BindView(R.id.text_percentage) TextView textPercentage;
 
     public ComparisonResultViewHolder(View itemView) {
         super(itemView);
@@ -21,7 +23,7 @@ public class ComparisonResultViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindComparisonResult(Map.Entry<Option, Integer> comparisonResult) {
-        String result = comparisonResult.getKey().getName() + "(" + comparisonResult.getValue() + "%)";
-        textComparisonResult.setText(result);
+        textComparisonResult.setText(comparisonResult.getKey().getName());
+        textPercentage.setText(String.format("%s%%", comparisonResult.getValue()));
     }
 }
