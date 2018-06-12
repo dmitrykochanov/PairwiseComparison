@@ -7,13 +7,16 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.dmko.pairwisecomparison.R;
+import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionDialog;
 import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.ComparisonResultFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsFragment;
@@ -22,18 +25,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ComparisonActivity extends AppCompatActivity {
+
     private static final String EXTRA_COMP_ID = "com.dmko.comp_id";
     private static final String EXTRA_COMP_NAME = "com.dmko.comp_name";
+    private static final String TAG_DIALOG = "dialog";
+
+    private static final int NUMBER_OF_TABS = 3;
+    private static final int COMPARISON_RESULT_TAB = 0;
+    private static final int OPTIONS_TAB = 1;
+    private static final int OPTION_COMPARISON_TAB = 2;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tab_layout) TabLayout tabLayout;
     @BindView(R.id.appbar) AppBarLayout appBar;
     @BindView(R.id.view_pager) ViewPager viewPager;
     @BindView(R.id.fab_add) FloatingActionButton fabAdd;
-
-    ComparisonResultFragment comparisonResultFragment;
-    OptionsFragment optionsFragment;
-    OptionComparisonsFragment optionComparisonsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,39 +49,26 @@ public class ComparisonActivity extends AppCompatActivity {
 
         String comparisonId = getIntent().getStringExtra(EXTRA_COMP_ID);
         String comparisonName = getIntent().getStringExtra(EXTRA_COMP_NAME);
-        comparisonResultFragment = ComparisonResultFragment.newInstance(comparisonId, comparisonName);
-        optionsFragment = OptionsFragment.newInstance(comparisonId);
-        optionComparisonsFragment = OptionComparisonsFragment.newInstance(comparisonId);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(comparisonName);
 
-
         fabAdd.hide();
         fabAdd.setOnClickListener(v -> {
-            switch (viewPager.getCurrentItem()) {
-                case 0:
-                    break;
-                case 1:
-                    optionsFragment.onFabAddClicked();
-                    break;
-                case 2:
-                    optionComparisonsFragment.onFabAddClicked();
-                    break;
-            }
+            showOptionDialog(comparisonId);
         });
 
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0:
-                        return comparisonResultFragment;
-                    case 1:
-                        return optionsFragment;
-                    case 2:
-                        return optionComparisonsFragment;
+                    case COMPARISON_RESULT_TAB:
+                        return ComparisonResultFragment.newInstance(comparisonId, comparisonName);
+                    case OPTIONS_TAB:
+                        return OptionsFragment.newInstance(comparisonId);
+                    case OPTION_COMPARISON_TAB:
+                        return OptionComparisonsFragment.newInstance(comparisonId);
                     default:
                         return null;
                 }
@@ -85,12 +78,12 @@ public class ComparisonActivity extends AppCompatActivity {
             @Override
             public CharSequence getPageTitle(int position) {
                 switch (position) {
-                    case 0:
+                    case COMPARISON_RESULT_TAB:
                         return getString(R.string.tab_result);
-                    case 1:
+                    case OPTIONS_TAB:
                         return getString(R.string.tap_options);
-                    case 2:
-                        return getString(R.string.tab_compare);
+                    case OPTION_COMPARISON_TAB:
+                        return getString(R.string.tab_option_comparison);
                     default:
                         return null;
                 }
@@ -98,7 +91,7 @@ public class ComparisonActivity extends AppCompatActivity {
 
             @Override
             public int getCount() {
-                return 3;
+                return NUMBER_OF_TABS;
             }
         });
 
@@ -106,12 +99,12 @@ public class ComparisonActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 switch (position) {
-                    case 0:
+                    case COMPARISON_RESULT_TAB:
                         appBar.setExpanded(true);
                         fabAdd.hide();
                         break;
-                    case 1:
-                    case 2:
+                    case OPTIONS_TAB:
+                    case OPTION_COMPARISON_TAB:
                         fabAdd.show();
                         break;
                 }
@@ -119,6 +112,18 @@ public class ComparisonActivity extends AppCompatActivity {
         });
 
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void showOptionDialog(String comparisonId) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        DialogFragment dialog = AddEditOptionDialog.newInstance(comparisonId, null);
+        dialog.show(ft, TAG_DIALOG);
     }
 
     public static Intent getIntent(Context context, String comparisonId, String comparisonName) {

@@ -3,6 +3,7 @@ package com.dmko.pairwisecomparison.data.entities;
 import java.util.Map;
 
 public class OptionCompareResultEntry {
+
     private Map<Option, Integer> results;
     private int chartType;
 

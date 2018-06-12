@@ -12,6 +12,7 @@ import timber.log.Timber;
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
 public class OptionsPresenter extends BasePresenterImpl<OptionsContract.View> implements OptionsContract.Presenter {
+
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
     private String comparisonId;
@@ -41,13 +42,6 @@ public class OptionsPresenter extends BasePresenterImpl<OptionsContract.View> im
                         getView().showLoading(false);
                     }
                 }));
-    }
-
-    @Override
-    public void addOptionSelected() {
-        if (isViewAttached()) {
-            getView().showOptionDialog(comparisonId, null);
-        }
     }
 
     @Override

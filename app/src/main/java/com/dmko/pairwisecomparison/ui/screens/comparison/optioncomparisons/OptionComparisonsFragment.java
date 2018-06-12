@@ -102,10 +102,6 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
         presenter.detachView();
     }
 
-    public void onFabAddClicked() {
-        presenter.onAddOptionSelected();
-    }
-
     @Override
     public void showLoading(boolean isLoading) {
         progressLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
@@ -134,20 +130,6 @@ public class OptionComparisonsFragment extends BaseFragment implements OptionCom
             spinnerFilterTypes.setVisibility(View.VISIBLE);
             adapterFilterTypes.setFilterTypes(filters);
         }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public void showOptionDialog(String comparisonId) {
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(TAG_DIALOG);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        DialogFragment dialog = AddEditOptionDialog.newInstance(comparisonId, null);
-        dialog.show(ft, TAG_DIALOG);
     }
 
     @SuppressWarnings("ConstantConditions")

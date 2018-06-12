@@ -8,7 +8,7 @@
     <string name="title_edit_option">Rename option</string>
     <string name="tab_result">Result</string>
     <string name="tap_options">Options</string>
-    <string name="tab_compare">Compare</string>
+    <string name="tab_option_comparison">Compare</string>
     <string name="hint_option_name">Option name</string>
     <string name="hint_comparison_name">Comparison name</string>
     <string name="button_cancel">Cancel</string>
@@ -26,7 +26,7 @@
     <string name="title_licenses">Licenses</string>
     <string name="snackbar_pie_chart_saved">Pie chart image saved to the gallery</string>
     <string name="snackbar_bar_chart_saved">Bar chart image saved to the gallery</string>
-    <string name="snackbar_list_saved">List copied to your clipboard</string>
+    <string name="snackbar_list_saved">List copied to clipboard</string>
     <string name="hint_add_option">Add new option…</string>
     <string name="button_add">add</string>
 

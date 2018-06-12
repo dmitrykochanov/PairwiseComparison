@@ -37,6 +37,7 @@ import butterknife.OnEditorAction;
 import butterknife.Unbinder;
 
 public class OptionsFragment extends BaseFragment implements OptionsContract.View {
+
     private static final String TAG_DIALOG = "dialog";
     private static final String ARG_COMP_ID = "comp_id";
 
@@ -143,10 +144,6 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
 
         DialogFragment dialog = AddEditOptionDialog.newInstance(comparisonId, optionId);
         dialog.show(ft, TAG_DIALOG);
-    }
-
-    public void onFabAddClicked() {
-        presenter.addOptionSelected();
     }
 
     @SuppressWarnings("ConstantConditions")

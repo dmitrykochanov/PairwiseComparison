@@ -8,23 +8,22 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.filte
 import java.util.List;
 
 public interface OptionComparisonsContract {
+
     interface View extends BaseView {
+
         void showLoading(boolean isLoading);
 
         void setOptionComparisons(List<OptionComparisonEntry> optionComparisons);
 
         void setFilterTypes(List<OptionComparisonEntryFilter> filters);
-
-        void showOptionDialog(String comparisonId);
     }
 
     interface Presenter extends BasePresenter<View> {
+
         void start(String comparisonId);
 
         void setFilter(OptionComparisonEntryFilter filter);
 
         void updateOptionComparison(OptionComparisonEntry optionComparison);
-
-        void onAddOptionSelected();
     }
 }

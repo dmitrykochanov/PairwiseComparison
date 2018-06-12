@@ -20,8 +20,6 @@ public interface OptionsContract {
 
         void start(String comparisonId);
 
-        void addOptionSelected();
-
         void updateOptionSelected(Option option);
 
         void deleteOptionSelected(Option option);
