@@ -79,7 +79,6 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         presenter.detachView();
     }
 

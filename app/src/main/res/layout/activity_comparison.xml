@@ -38,13 +38,39 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add"
-        android:src="@drawable/ic_add"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floating_action_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        app:layout_behavior="com.dmko.pairwisecomparison.utils.ScrollingHidingFabBehavior" />
+        android:src="@drawable/ic_add"
+        app:menu_colorNormal="@color/colorAccent"
+        app:menu_colorPressed="@color/colorAccent"
+        app:menu_fab_size="normal"
+        app:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+        app:menu_labels_showAnimation="@anim/fab_slide_in_from_right">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_compare_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_compare"
+            app:fab_label="Compare options"
+            app:fab_size="normal"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_add_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_insert"
+            app:fab_label="Add options from clipboard"
+            app:fab_size="normal"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent" />
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

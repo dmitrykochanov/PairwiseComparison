@@ -8,6 +8,7 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.Compar
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsFragment;
+import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsDialog;
 
 import dagger.Subcomponent;
 
@@ -25,4 +26,6 @@ public interface ControllerComponent {
     void inject(OptionComparisonsFragment optionComparisonsFragment);
 
     void inject(AddEditOptionDialog addEditOptionDialog);
+
+    void inject(PasteOptionsDialog pasteOptionsDialog);
 }

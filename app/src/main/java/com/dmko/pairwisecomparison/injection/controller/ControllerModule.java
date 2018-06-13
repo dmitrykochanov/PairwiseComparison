@@ -15,6 +15,8 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.recyclerview.OptionsAdapter;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.recyclerview.ComparisonsAdapter;
+import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsContract;
+import com.dmko.pairwisecomparison.ui.screens.pasteoptions.recyclerview.PasteOptionsAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,5 +61,11 @@ public class ControllerModule {
     @ControllerScope
     public FilterTypesAdapter provideFilterTypesAdapter(Context context) {
         return new FilterTypesAdapter(context, new ArrayList<>());
+    }
+
+    @Provides
+    @ControllerScope
+    public PasteOptionsAdapter providePasteOptionAdapter(PasteOptionsContract.Presenter presenter) {
+        return new PasteOptionsAdapter(presenter);
     }
 }

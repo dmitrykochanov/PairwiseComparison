@@ -31,6 +31,9 @@ public abstract class OptionsDao {
     @Insert
     public abstract void insertOption(Option option);
 
+    @Insert
+    public abstract void insertOptions(List<Option> options);
+
     @Update
     public abstract void updateOption(Option option);
 

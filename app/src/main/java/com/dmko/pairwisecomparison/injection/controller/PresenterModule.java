@@ -16,6 +16,8 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsPresenter;
+import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsContract;
+import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsPresenter;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import dagger.Module;
@@ -58,5 +60,11 @@ public class PresenterModule {
     @ControllerScope
     public AddEditOptionContract.Presenter provideAddEditOptionPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
         return new AddEditOptionPresenter(schedulers, optionsRepository);
+    }
+
+    @Provides
+    @ControllerScope
+    public PasteOptionsContract.Presenter providePasteOptionsPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
+        return new PasteOptionsPresenter(schedulers, optionsRepository);
     }
 }

@@ -25,8 +25,6 @@ import static com.dmko.pairwisecomparison.utils.DatabaseSchema.Options.TABLE_NAM
         indices = {
                 @Index(Cols.COMPARISON_ID)
         })
-
-
 public class Option implements Comparable<Option> {
 
     @PrimaryKey

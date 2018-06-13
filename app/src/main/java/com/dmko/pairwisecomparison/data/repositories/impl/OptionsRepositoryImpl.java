@@ -19,6 +19,7 @@ import timber.log.Timber;
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_DATA;
 
 public class OptionsRepositoryImpl implements OptionsRepository {
+
     private ComparisonsDao comparisonsDao;
     private OptionsDao optionsDao;
 
@@ -63,6 +64,15 @@ public class OptionsRepositoryImpl implements OptionsRepository {
             Timber.i("Inserting %s with %s[%d]", Option.class.getSimpleName(), OptionComparison.class.getSimpleName(), optionComparisons.size());
 
             optionsDao.insertOptionWithComparisons(option, optionComparisons);
+        });
+    }
+
+    @Override
+    public Completable insertOptions(List<Option> options) {
+        return new CompletableFromAction(() -> {
+            for (Option option : options) {
+                insertOption(option).blockingAwait();
+            }
         });
     }
 

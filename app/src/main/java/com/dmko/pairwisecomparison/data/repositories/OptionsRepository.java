@@ -17,6 +17,8 @@ public interface OptionsRepository {
 
     Completable insertOption(Option option);
 
+    Completable insertOptions(List<Option> options);
+
     Completable updateOption(Option option);
 
     Completable deleteOption(Option option);

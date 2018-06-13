@@ -1,11 +1,12 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison;
 
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,9 @@ import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionDialog;
 import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.ComparisonResultFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsFragment;
+import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsDialog;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +43,9 @@ public class ComparisonActivity extends AppCompatActivity {
     @BindView(R.id.tab_layout) TabLayout tabLayout;
     @BindView(R.id.appbar) AppBarLayout appBar;
     @BindView(R.id.view_pager) ViewPager viewPager;
-    @BindView(R.id.fab_add) FloatingActionButton fabAdd;
+    @BindView(R.id.floating_action_menu) FloatingActionMenu floatingActionMenu;
+    @BindView(R.id.fab_compare_options) FloatingActionButton fabCompareOptions;
+    @BindView(R.id.fab_add_options) FloatingActionButton fabAddOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +59,6 @@ public class ComparisonActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(comparisonName);
-
-        fabAdd.hide();
-        fabAdd.setOnClickListener(v -> {
-            showOptionDialog(comparisonId);
-        });
 
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -101,20 +102,24 @@ public class ComparisonActivity extends AppCompatActivity {
                 switch (position) {
                     case COMPARISON_RESULT_TAB:
                         appBar.setExpanded(true);
-                        fabAdd.hide();
-                        break;
-                    case OPTIONS_TAB:
-                    case OPTION_COMPARISON_TAB:
-                        fabAdd.show();
                         break;
                 }
             }
         });
-
         tabLayout.setupWithViewPager(viewPager);
+
+        fabAddOptions.setOnClickListener(v -> {
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            String clipboardContent = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
+            if (clipboardContent.trim().isEmpty()) {
+                Snackbar.make(toolbar, R.string.snackbar_empty_clipboard, Snackbar.LENGTH_LONG).show();
+            } else {
+                openPasteOptionsDialog(comparisonId);
+            }
+        });
     }
 
-    private void showOptionDialog(String comparisonId) {
+    private void openPasteOptionsDialog(String comparisonId) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG);
         if (prev != null) {
@@ -122,7 +127,7 @@ public class ComparisonActivity extends AppCompatActivity {
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = AddEditOptionDialog.newInstance(comparisonId, null);
+        DialogFragment dialog = PasteOptionsDialog.newInstance(comparisonId);
         dialog.show(ft, TAG_DIALOG);
     }
 

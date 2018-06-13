@@ -27,8 +27,11 @@
     <string name="snackbar_pie_chart_saved">Pie chart image saved to the gallery</string>
     <string name="snackbar_bar_chart_saved">Bar chart image saved to the gallery</string>
     <string name="snackbar_list_saved">List copied to clipboard</string>
+    <string name="snackbar_empty_clipboard">Your clipboard is empty</string>
     <string name="hint_add_option">Add new option…</string>
     <string name="button_add">add</string>
+    <string name="button_save">save</string>
+    <string name="title_pasted_options">Options from your clipboard:</string>
 
     <string-array name="chart_types">
         <item>Pie Chart</item>
