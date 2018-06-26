@@ -28,11 +28,11 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add"
-        android:src="@drawable/ic_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_add"
         app:layout_behavior="com.dmko.pairwisecomparison.utils.ScrollingHidingFabBehavior" />
 </android.support.design.widget.CoordinatorLayout>

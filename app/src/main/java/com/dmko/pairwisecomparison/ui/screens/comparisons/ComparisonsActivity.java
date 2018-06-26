@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ComparisonsActivity extends BaseActivity {
+
     private static final String DIALOG_TAG = "dialog";
 
     @BindView(R.id.toolbar) Toolbar toolbar;

@@ -46,8 +46,7 @@ public class OptionComparisonsPresenter extends BasePresenterImpl<OptionComparis
         getView().showLoading(true);
 
         Flowable<List<OptionComparisonEntry>> entriesFlowable = optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
-                .doOnNext(Collections::sort)
-                .distinctUntilChanged();
+                .doOnNext(Collections::sort);
         Flowable<OptionComparisonEntryFilter> filterTypeFlowable = filterTypeSubject.toFlowable(BackpressureStrategy.BUFFER);
 
         addDisposable(entriesFlowable
@@ -71,11 +70,11 @@ public class OptionComparisonsPresenter extends BasePresenterImpl<OptionComparis
                 })
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
-                .subscribe(filers -> {
+                .subscribe(filters -> {
                     if (isViewAttached()) {
                         Timber.tag(LOG_APP);
-                        Timber.i("Sending %s[%d] to the view", OptionComparisonEntryFilter.class.getSimpleName(), filers.size());
-                        getView().setFilterTypes(filers);
+                        Timber.i("Sending %s[%d] to the view", OptionComparisonEntryFilter.class.getSimpleName(), filters.size());
+                        getView().setFilterTypes(filters);
                     }
                 }));
 

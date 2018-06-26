@@ -8,16 +8,20 @@ import com.dmko.pairwisecomparison.ui.screens.addeditcomparison.AddEditCompariso
 import com.dmko.pairwisecomparison.ui.screens.addeditcomparison.AddEditComparisonPresenter;
 import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionContract;
 import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionPresenter;
+import com.dmko.pairwisecomparison.ui.screens.comparison.ComparisonContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.ComparisonResultContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.ComparisonResultPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsPresenter;
+import com.dmko.pairwisecomparison.ui.screens.comparison.options.ComparisonPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsPresenter;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsContract;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsPresenter;
+import com.dmko.pairwisecomparison.ui.screens.recompare.RecompareContract;
+import com.dmko.pairwisecomparison.ui.screens.recompare.RecomparePresenter;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import dagger.Module;
@@ -66,5 +70,17 @@ public class PresenterModule {
     @ControllerScope
     public PasteOptionsContract.Presenter providePasteOptionsPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
         return new PasteOptionsPresenter(schedulers, optionsRepository);
+    }
+
+    @Provides
+    @ControllerScope
+    public RecompareContract.Presenter provideRecomparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
+        return new RecomparePresenter(schedulers, optionsRepository);
+    }
+
+    @Provides
+    @ControllerScope
+    public ComparisonContract.Presenter provideComparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
+        return new ComparisonPresenter(schedulers, optionsRepository);
     }
 }

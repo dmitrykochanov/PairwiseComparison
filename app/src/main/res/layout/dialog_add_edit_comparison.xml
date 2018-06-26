@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.AppCompatTextView
+    <TextView
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.v7.widget.AppCompatButton
+    <Button
         android:id="@+id/button_cancel"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_ok"
         app:layout_constraintHorizontal_chainStyle="spread_inside" />
 
-    <android.support.v7.widget.AppCompatButton
+    <Button
         android:id="@+id/button_ok"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"

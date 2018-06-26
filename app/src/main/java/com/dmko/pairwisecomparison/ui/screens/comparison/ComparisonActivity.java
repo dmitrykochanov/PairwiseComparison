@@ -1,5 +1,6 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison;
 
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,22 +14,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.dmko.pairwisecomparison.R;
-import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionDialog;
+import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseActivity;
 import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.ComparisonResultFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsFragment;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsDialog;
+import com.dmko.pairwisecomparison.ui.screens.recompare.RecompareActivity;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ComparisonActivity extends AppCompatActivity {
+public class ComparisonActivity extends BaseActivity implements ComparisonContract.View {
 
     private static final String EXTRA_COMP_ID = "com.dmko.comp_id";
     private static final String EXTRA_COMP_NAME = "com.dmko.comp_name";
@@ -47,11 +50,16 @@ public class ComparisonActivity extends AppCompatActivity {
     @BindView(R.id.fab_compare_options) FloatingActionButton fabCompareOptions;
     @BindView(R.id.fab_add_options) FloatingActionButton fabAddOptions;
 
+    @Inject ComparisonContract.Presenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comparison);
         ButterKnife.bind(this);
+
+        getControllerComponent().inject(this);
+        presenter.attachView(this);
 
         String comparisonId = getIntent().getStringExtra(EXTRA_COMP_ID);
         String comparisonName = getIntent().getStringExtra(EXTRA_COMP_NAME);
@@ -108,27 +116,50 @@ public class ComparisonActivity extends AppCompatActivity {
         });
         tabLayout.setupWithViewPager(viewPager);
 
+        fabCompareOptions.setOnClickListener(v -> {
+            presenter.onOpenRecompareActivitySelected(comparisonId, comparisonName);
+        });
+
         fabAddOptions.setOnClickListener(v -> {
-            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            String clipboardContent = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
-            if (clipboardContent.trim().isEmpty()) {
-                Snackbar.make(toolbar, R.string.snackbar_empty_clipboard, Snackbar.LENGTH_LONG).show();
-            } else {
-                openPasteOptionsDialog(comparisonId);
-            }
+            openPasteOptionsDialog(comparisonId);
         });
     }
 
-    private void openPasteOptionsDialog(String comparisonId) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.stop();
+        presenter.detachView();
+    }
 
-        DialogFragment dialog = PasteOptionsDialog.newInstance(comparisonId);
-        dialog.show(ft, TAG_DIALOG);
+    private void openPasteOptionsDialog(String comparisonId) {
+        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = clipboardManager.getPrimaryClip();
+        if (clip == null || clip.getItemAt(0).getText().toString().trim().isEmpty()) {
+            Snackbar.make(toolbar, R.string.snackbar_empty_clipboard, Snackbar.LENGTH_LONG).show();
+        } else {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG);
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            DialogFragment dialog = PasteOptionsDialog.newInstance(comparisonId);
+            dialog.show(ft, TAG_DIALOG);
+        }
+    }
+
+
+    @Override
+    public void showNothingToCompareDialog() {
+        Snackbar.make(toolbar, R.string.snackbar_nothing_to_compare, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void openRecompareActivity(String comparisonId, String comparisonName) {
+        Intent intent = RecompareActivity.newIntent(this, comparisonId, comparisonName);
+        startActivity(intent);
     }
 
     public static Intent getIntent(Context context, String comparisonId, String comparisonName) {

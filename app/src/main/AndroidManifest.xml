@@ -24,6 +24,11 @@
         <activity
             android:name=".ui.screens.comparison.ComparisonActivity"
             android:parentActivityName=".ui.screens.comparisons.ComparisonsActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+        <activity
+            android:name=".ui.screens.recompare.RecompareActivity"
+            android:parentActivityName=".ui.screens.comparison.ComparisonActivity"
             android:screenOrientation="portrait" />
     </application>
 

@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.AppCompatButton
+    <Button
         android:id="@+id/button_left"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -11,7 +11,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.AppCompatButton
+    <Button
         android:id="@+id/button_right"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

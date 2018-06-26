@@ -11,6 +11,7 @@ import com.dmko.pairwisecomparison.ui.base.mvp.BaseView;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseView {
+
     protected ControllerComponent getControllerComponent() {
         return ((App) getApplication())
                 .getApplicationComponent()
