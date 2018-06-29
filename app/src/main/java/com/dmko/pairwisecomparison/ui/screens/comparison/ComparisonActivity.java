@@ -138,6 +138,7 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
         if (clip == null || clip.getItemAt(0).getText().toString().trim().isEmpty()) {
             Snackbar.make(toolbar, R.string.snackbar_empty_clipboard, Snackbar.LENGTH_LONG).show();
         } else {
+            floatingActionMenu.close(true);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG);
             if (prev != null) {
@@ -158,6 +159,7 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
 
     @Override
     public void openRecompareActivity(String comparisonId, String comparisonName) {
+        floatingActionMenu.close(true);
         Intent intent = RecompareActivity.newIntent(this, comparisonId, comparisonName);
         startActivity(intent);
     }

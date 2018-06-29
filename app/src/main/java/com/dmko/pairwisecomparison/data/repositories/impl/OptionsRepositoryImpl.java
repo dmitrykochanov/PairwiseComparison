@@ -7,6 +7,7 @@ import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.data.entities.OptionComparison;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
+import com.dmko.pairwisecomparison.data.sharedoreferences.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,12 @@ public class OptionsRepositoryImpl implements OptionsRepository {
 
     private ComparisonsDao comparisonsDao;
     private OptionsDao optionsDao;
+    private SharedPreferencesHelper sharedPreferencesHelper;
 
-    public OptionsRepositoryImpl(ComparisonsDao comparisonsDao, OptionsDao optionsDao) {
+    public OptionsRepositoryImpl(ComparisonsDao comparisonsDao, OptionsDao optionsDao, SharedPreferencesHelper sharedPreferencesHelper) {
         this.comparisonsDao = comparisonsDao;
         this.optionsDao = optionsDao;
+        this.sharedPreferencesHelper = sharedPreferencesHelper;
     }
 
     @Override
@@ -118,5 +121,15 @@ public class OptionsRepositoryImpl implements OptionsRepository {
 
             optionsDao.updateOptionComparison(optionComparison);
         });
+    }
+
+    @Override
+    public void savePromptText(String prompt) {
+        sharedPreferencesHelper.savePromptText(prompt);
+    }
+
+    @Override
+    public String getPromptText() {
+        return sharedPreferencesHelper.getPromptText();
     }
 }

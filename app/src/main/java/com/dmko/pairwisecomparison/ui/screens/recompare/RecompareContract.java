@@ -18,6 +18,9 @@ public interface RecompareContract {
 
         void setDoneEnabled(boolean enabled);
 
+        void setPromptText(String prompt);
+
+        String getDefaultPromptText();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -29,5 +32,7 @@ public interface RecompareContract {
         void onPreviousSelected();
 
         void onNextSelected();
+
+        void savePromptText(String prompt);
     }
 }

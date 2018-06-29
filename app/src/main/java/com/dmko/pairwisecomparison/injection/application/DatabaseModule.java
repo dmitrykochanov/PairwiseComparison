@@ -3,10 +3,13 @@ package com.dmko.pairwisecomparison.injection.application;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.dmko.pairwisecomparison.data.AppDatabase;
 import com.dmko.pairwisecomparison.data.dao.ComparisonsDao;
 import com.dmko.pairwisecomparison.data.dao.OptionsDao;
+import com.dmko.pairwisecomparison.data.sharedoreferences.SharedPreferencesHelper;
+import com.dmko.pairwisecomparison.data.sharedoreferences.SharedPreferencesHelperImpl;
 import com.dmko.pairwisecomparison.injection.scopes.ApplicationScope;
 import com.dmko.pairwisecomparison.utils.DatabaseSchema;
 
@@ -32,5 +35,11 @@ public class DatabaseModule {
     @ApplicationScope
     public OptionsDao provideOptionsDao(AppDatabase appDatabase) {
         return appDatabase.getOptionsDao();
+    }
+
+    @Provides
+    @ApplicationScope
+    public SharedPreferencesHelper provideSharedPreferencesHelper(SharedPreferences sharedPreferences) {
+        return new SharedPreferencesHelperImpl(sharedPreferences);
     }
 }

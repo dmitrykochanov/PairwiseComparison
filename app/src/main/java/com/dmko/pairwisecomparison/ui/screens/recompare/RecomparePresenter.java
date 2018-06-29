@@ -22,6 +22,11 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
 
     @Override
     public void loadOptionComparisons(String comparisonId) {
+        if (optionsRepository.getPromptText() == null) {
+            optionsRepository.savePromptText(getView().getDefaultPromptText());
+        }
+        getView().setPromptText(optionsRepository.getPromptText());
+
         addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
@@ -57,6 +62,14 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
     public void onNextSelected() {
         currentPosition += 1;
         changeOptionComparison();
+    }
+
+    @Override
+    public void savePromptText(String prompt) {
+        optionsRepository.savePromptText(prompt);
+        if (isViewAttached()) {
+            getView().setPromptText(prompt);
+        }
     }
 
     private void changeOptionComparison() {

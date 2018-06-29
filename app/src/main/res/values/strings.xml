@@ -12,6 +12,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
     <string name="error_empty_option_name">Option name can\'t be empty</string>
+    <string name="error_empty_prompt_text">Prompt text can\'t be empty</string>
     <string name="error_empty_comparison_name">Comparison name can\'t be empty</string>
     <string name="description_click_to_add">Click the + button to add</string>
     <string name="title_no_comparisons">No Comparisons</string>
@@ -30,7 +31,11 @@
     <string name="button_add">add</string>
     <string name="button_save">save</string>
     <string name="title_pasted_options">Options from your clipboard:</string>
-    <string name="title_prompt">Which of these two options is more important?</string>
+    <string name="title_prompt_default">Which of these two options is more important?</string>
+    <string name="menu_add_from_clipboard">Add options from clipboard</string>
+    <string name="menu_recompare_options">Compare options one by one</string>
+    <string name="title_change_the_prompt">Change the prompt</string>
+    <string name="hint_prompt_text">prompt text</string>
 
     <string-array name="chart_types">
         <item>Pie Chart</item>
