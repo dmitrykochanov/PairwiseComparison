@@ -23,12 +23,16 @@ public class OptionsPresenter extends BasePresenterImpl<OptionsContract.View> im
     }
 
     @Override
-    public void start(String comparisonId) {
+    public void setArgs(String comparisonId) {
+        this.comparisonId = comparisonId;
+    }
+
+    @Override
+    public void start() {
         Timber.tag(LOG_APP);
         Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         getView().showLoading(true);
-        this.comparisonId = comparisonId;
         addDisposable(optionsRepository.getOptionsByComparisonId(comparisonId)
                 .doOnNext(Collections::sort)
                 .subscribeOn(schedulers.io())
@@ -38,7 +42,11 @@ public class OptionsPresenter extends BasePresenterImpl<OptionsContract.View> im
                     Timber.i("%s sending to %s, %s[%d]", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), Option.class.getSimpleName(), options.size());
 
                     if (isViewAttached()) {
-                        getView().setOptions(options);
+                        if (options.isEmpty()) {
+                            getView().setEmptyOptions();
+                        } else {
+                            getView().setOptions(options);
+                        }
                         getView().showLoading(false);
                     }
                 }));

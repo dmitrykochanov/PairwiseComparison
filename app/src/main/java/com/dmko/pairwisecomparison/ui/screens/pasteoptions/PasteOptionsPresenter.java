@@ -12,6 +12,8 @@ public class PasteOptionsPresenter extends BasePresenterImpl<PasteOptionsContrac
 
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
+
+    private String comparisonId;
     private List<Option> options = new ArrayList<>();
 
     public PasteOptionsPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
@@ -20,8 +22,13 @@ public class PasteOptionsPresenter extends BasePresenterImpl<PasteOptionsContrac
     }
 
     @Override
-    public void start(String comparisonId, String clipboardContent) {
-        parseClipBoardContent(comparisonId, clipboardContent);
+    public void setArgs(String comparisonId) {
+        this.comparisonId = comparisonId;
+    }
+
+    @Override
+    public void start(String clipboardContent) {
+        parseClipboardContent(comparisonId, clipboardContent);
         getView().setOptions(options);
     }
 
@@ -53,7 +60,7 @@ public class PasteOptionsPresenter extends BasePresenterImpl<PasteOptionsContrac
                 }));
     }
 
-    private void parseClipBoardContent(String comparisonId, String clipboardContent) {
+    private void parseClipboardContent(String comparisonId, String clipboardContent) {
         String[] optionNames = clipboardContent.split("\n");
         for (String optionName : optionNames) {
             Option option = new Option();

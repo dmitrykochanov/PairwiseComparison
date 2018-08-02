@@ -8,20 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 public interface ComparisonResultContract {
+
     interface View extends BaseView {
 
         void showLoading(boolean isLoading);
 
-        void setResults(Map<Option, Integer> results, int chartType);
+        void setResults(Map<Option, Integer> results);
 
-        void saveChart(int chartType);
+        void saveChart(int chartType, String comparisonName);
     }
 
     interface Presenter extends BasePresenter<View> {
 
-        void start(String comparisonId);
+        void setArgs(String comparisonId, String comparisonName);
 
-        void setChartType(int chartType);
+        void start();
+
+        void onChartTypeChanged();
 
         void saveChartSelected(int chartType);
 

@@ -4,6 +4,7 @@ import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 
 public class HasOptionFilter implements OptionComparisonEntryFilter {
+
     private Option option;
 
     public HasOptionFilter(Option option) {

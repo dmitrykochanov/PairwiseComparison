@@ -24,7 +24,7 @@
     <string name="menu_licenses">Licenses</string>
     <string name="snackbar_pie_chart_saved">Pie chart image saved to the gallery</string>
     <string name="snackbar_bar_chart_saved">Bar chart image saved to the gallery</string>
-    <string name="snackbar_list_saved">List copied to clipboard</string>
+    <string name="snackbar_list_saved">List copied to your clipboard</string>
     <string name="snackbar_empty_clipboard">Your clipboard is empty</string>
     <string name="snackbar_nothing_to_compare">Nothing to compare</string>
     <string name="hint_add_option">Add new option…</string>
@@ -36,6 +36,8 @@
     <string name="menu_recompare_options">Compare options one by one</string>
     <string name="title_change_the_prompt">Change the prompt</string>
     <string name="hint_prompt_text">prompt text</string>
+    <string name="filter_all">All</string>
+    <string name="filter_not_compared">Not compared</string>
 
     <string-array name="chart_types">
         <item>Pie Chart</item>

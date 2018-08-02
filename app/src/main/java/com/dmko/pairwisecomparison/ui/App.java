@@ -11,6 +11,7 @@ import com.dmko.pairwisecomparison.injection.application.ApplicationComponent;
 import com.dmko.pairwisecomparison.injection.application.ApplicationModule;
 import com.dmko.pairwisecomparison.injection.application.DaggerApplicationComponent;
 import com.dmko.pairwisecomparison.utils.ProductionTree;
+import com.squareup.leakcanary.LeakCanary;
 
 import timber.log.Timber;
 
@@ -22,6 +23,11 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if(LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
 
         if (BuildConfig.DEBUG) {
             setupLogs();

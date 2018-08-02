@@ -1,5 +1,6 @@
 package com.dmko.pairwisecomparison.ui.screens.addeditoption;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,9 +8,8 @@ import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +26,7 @@ import butterknife.OnEditorAction;
 import butterknife.Unbinder;
 
 public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOptionContract.View {
+
     private static final String ARG_OPTION_ID = "option_id";
     private static final String ARG_COMP_ID = "comp_id";
 
@@ -36,6 +37,7 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
     @Inject AddEditOptionContract.Presenter presenter;
 
     private Unbinder unbinder;
+    private InputMethodManager inputMethodManager;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -43,6 +45,15 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
 
         getControllerComponent().inject(this);
         presenter.attachView(this);
+
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("no arguments");
+        }
+        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        String optionId = getArguments().getString(ARG_OPTION_ID);
+        presenter.setArgs(comparisonId, optionId);
+
+        inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Nullable
@@ -53,18 +64,8 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
         View view = inflater.inflate(R.layout.dialog_add_edit_option, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        String comparisonId = getArguments().getString(ARG_COMP_ID);
-        String optionId = getArguments().getString(ARG_OPTION_ID);
-        presenter.start(comparisonId, optionId);
-        if (optionId != null) {
-            textTitle.setText(R.string.title_edit_option);
-        }
-
-        Window window = getDialog().getWindow();
-        if (window != null) {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            window.requestFeature(Window.FEATURE_NO_TITLE);
-        }
+        inputName.getEditText().requestFocus();
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         return view;
     }
@@ -84,20 +85,14 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
 
     @OnClick(R.id.button_cancel)
     public void onButtonCancelClicked() {
-        getDialog().cancel();
+        closeDialog();
     }
 
     @OnClick(R.id.button_ok)
     @SuppressWarnings("ConstantConditions")
     public void onButtonOkClicked() {
         String newName = inputName.getEditText().getText().toString().trim();
-        if (newName.isEmpty()) {
-            inputName.setErrorEnabled(true);
-            inputName.setError(getString(R.string.error_empty_option_name));
-        } else {
-            presenter.saveOption(newName);
-            getDialog().cancel();
-        }
+        presenter.saveOption(newName);
     }
 
     @OnEditorAction(R.id.input_text_name)
@@ -116,11 +111,22 @@ public class AddEditOptionDialog extends BaseDialogFragment implements AddEditOp
     @Override
     @SuppressWarnings("ConstantConditions")
     public void setOption(Option option) {
+        textTitle.setText(R.string.title_edit_option);
         String name = option.getName();
-        if (name != null) {
-            inputName.getEditText().setText(name);
-            inputName.getEditText().setSelection(name.length());
-        }
+        inputName.getEditText().setText(name);
+        inputName.getEditText().setSelection(name.length());
+    }
+
+    @Override
+    public void showEmptyNameError() {
+        inputName.setErrorEnabled(true);
+        inputName.setError(getString(R.string.error_empty_option_name));
+    }
+
+    @Override
+    public void closeDialog() {
+        inputMethodManager.hideSoftInputFromWindow(inputName.getEditText().getWindowToken(), 0);
+        getDialog().cancel();
     }
 
     public static AddEditOptionDialog newInstance(String comparisonId, String optionId) {

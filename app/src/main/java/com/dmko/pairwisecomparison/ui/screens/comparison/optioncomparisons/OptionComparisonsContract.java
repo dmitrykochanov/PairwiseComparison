@@ -1,5 +1,7 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons;
 
+import android.content.res.Resources;
+
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.ui.base.mvp.BasePresenter;
 import com.dmko.pairwisecomparison.ui.base.mvp.BaseView;
@@ -13,6 +15,8 @@ public interface OptionComparisonsContract {
 
         void showLoading(boolean isLoading);
 
+        void setEmptyOptionComparisons();
+
         void setOptionComparisons(List<OptionComparisonEntry> optionComparisons);
 
         void setFilterTypes(List<OptionComparisonEntryFilter> filters);
@@ -20,7 +24,9 @@ public interface OptionComparisonsContract {
 
     interface Presenter extends BasePresenter<View> {
 
-        void start(String comparisonId);
+        void setArgs(String comparisonId, Resources resources);
+
+        void start();
 
         void setFilter(OptionComparisonEntryFilter filter);
 

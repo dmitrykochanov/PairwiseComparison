@@ -13,6 +13,7 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
     private OptionsRepository optionsRepository;
 
     private int currentPosition = 0;
+    private String comparisonId;
     private List<OptionComparisonEntry> optionComparisons;
 
     public RecomparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
@@ -21,7 +22,12 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
     }
 
     @Override
-    public void loadOptionComparisons(String comparisonId) {
+    public void setArgs(String comparisonId) {
+        this.comparisonId = comparisonId;
+    }
+
+    @Override
+    public void start() {
         if (optionsRepository.getPromptText() == null) {
             optionsRepository.savePromptText(getView().getDefaultPromptText());
         }

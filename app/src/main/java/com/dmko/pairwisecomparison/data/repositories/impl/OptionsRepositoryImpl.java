@@ -1,7 +1,6 @@
 package com.dmko.pairwisecomparison.data.repositories.impl;
 
 
-import com.dmko.pairwisecomparison.data.dao.ComparisonsDao;
 import com.dmko.pairwisecomparison.data.dao.OptionsDao;
 import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.data.entities.OptionComparison;
@@ -21,12 +20,10 @@ import static com.dmko.pairwisecomparison.utils.LogTags.LOG_DATA;
 
 public class OptionsRepositoryImpl implements OptionsRepository {
 
-    private ComparisonsDao comparisonsDao;
     private OptionsDao optionsDao;
     private SharedPreferencesHelper sharedPreferencesHelper;
 
-    public OptionsRepositoryImpl(ComparisonsDao comparisonsDao, OptionsDao optionsDao, SharedPreferencesHelper sharedPreferencesHelper) {
-        this.comparisonsDao = comparisonsDao;
+    public OptionsRepositoryImpl(OptionsDao optionsDao, SharedPreferencesHelper sharedPreferencesHelper) {
         this.optionsDao = optionsDao;
         this.sharedPreferencesHelper = sharedPreferencesHelper;
     }

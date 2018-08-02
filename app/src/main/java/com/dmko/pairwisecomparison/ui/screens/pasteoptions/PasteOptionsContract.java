@@ -17,7 +17,9 @@ public interface PasteOptionsContract {
 
     interface Presenter extends BasePresenter<PasteOptionsContract.View> {
 
-        void start(String comparisonId, String clipboardContent);
+        void setArgs(String comparisonId);
+
+        void start(String clipboardContent);
 
         void updateOption(Option option);
 

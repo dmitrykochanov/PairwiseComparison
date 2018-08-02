@@ -1,8 +1,7 @@
-package com.dmko.pairwisecomparison.ui.screens.comparison.options;
+package com.dmko.pairwisecomparison.ui.screens.comparison;
 
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
-import com.dmko.pairwisecomparison.ui.screens.comparison.ComparisonContract;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
 import java.util.List;

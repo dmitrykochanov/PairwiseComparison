@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ComparisonsAdapter extends RecyclerView.Adapter<ComparisonViewHolder> {
+
     private ComparisonsContract.Presenter presenter;
     private List<Comparison> comparisons;
 

@@ -23,7 +23,7 @@ public class RepositoryModule {
 
     @Provides
     @ApplicationScope
-    public OptionsRepository provideOptionsRepository(ComparisonsDao comparisonsDao, OptionsDao optionsDao, SharedPreferencesHelper sharedPreferencesHelper) {
-        return new OptionsRepositoryImpl(comparisonsDao, optionsDao, sharedPreferencesHelper);
+    public OptionsRepository provideOptionsRepository(OptionsDao optionsDao, SharedPreferencesHelper sharedPreferencesHelper) {
+        return new OptionsRepositoryImpl(optionsDao, sharedPreferencesHelper);
     }
 }

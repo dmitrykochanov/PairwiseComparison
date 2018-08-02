@@ -10,10 +10,12 @@ import timber.log.Timber;
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
 public class AddEditComparisonPresenter extends BasePresenterImpl<AddEditComparisonContract.View> implements AddEditComparisonContract.Presenter {
+
     private SchedulersFacade schedulers;
     private ComparisonRepository repository;
+
+    private String comparisonId;
     private Comparison comparison;
-    private boolean isNew;
 
     public AddEditComparisonPresenter(SchedulersFacade schedulers, ComparisonRepository repository) {
         this.schedulers = schedulers;
@@ -21,15 +23,18 @@ public class AddEditComparisonPresenter extends BasePresenterImpl<AddEditCompari
     }
 
     @Override
-    public void start(String comparisonId) {
+    public void setArgs(String comparisonId) {
+        this.comparisonId = comparisonId;
+    }
+
+    @Override
+    public void start() {
         Timber.tag(LOG_APP);
         Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         getView().showLoading(true);
         if (comparisonId == null) {
-            isNew = true;
             comparison = new Comparison();
-            getView().setComparison(comparison);
             getView().showLoading(false);
         } else {
             addDisposable(repository.getComparisonById(comparisonId)
@@ -50,18 +55,27 @@ public class AddEditComparisonPresenter extends BasePresenterImpl<AddEditCompari
 
     @Override
     public void saveComparison(String newName) {
-        Timber.tag(LOG_APP);
-        Timber.i("saving new %s name = %s", Comparison.class.getSimpleName(), newName);
-
-        comparison.setName(newName);
-        if (isNew) {
-            addDisposable(repository.insertComparison(comparison)
-                    .subscribeOn(schedulers.io())
-                    .subscribe());
+        if (newName.isEmpty()) {
+            getView().showEmptyNameError();
         } else {
-            addDisposable(repository.updateComparison(comparison)
-                    .subscribeOn(schedulers.io())
-                    .subscribe());
+            comparison.setName(newName);
+            if (comparisonId == null) {
+                addDisposable(repository.insertComparison(comparison)
+                        .subscribeOn(schedulers.io())
+                        .subscribe(() -> {
+                            if (isViewAttached()) {
+                                getView().closeDialog();
+                            }
+                        }));
+            } else {
+                addDisposable(repository.updateComparison(comparison)
+                        .subscribeOn(schedulers.io())
+                        .subscribe(() -> {
+                            if (isViewAttached()) {
+                                getView().closeDialog();
+                            }
+                        }));
+            }
         }
     }
 }

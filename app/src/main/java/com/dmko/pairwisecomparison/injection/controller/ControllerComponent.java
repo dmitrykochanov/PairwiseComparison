@@ -15,7 +15,7 @@ import com.dmko.pairwisecomparison.ui.screens.recompare.RecompareFragment;
 import dagger.Subcomponent;
 
 @ControllerScope
-@Subcomponent(modules = {ControllerModule.class, PresenterModule.class})
+@Subcomponent(modules = {ControllerModule.class, PresenterModule.class, InteractorModule.class})
 public interface ControllerComponent {
 
     void inject(ComparisonsFragment comparisonsFragment);

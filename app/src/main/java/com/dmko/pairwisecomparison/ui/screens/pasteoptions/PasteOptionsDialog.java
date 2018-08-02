@@ -1,6 +1,5 @@
 package com.dmko.pairwisecomparison.ui.screens.pasteoptions;
 
-import android.app.DialogFragment;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,15 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.test.mock.MockApplication;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.Option;
-import com.dmko.pairwisecomparison.ui.App;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseDialogFragment;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.recyclerview.PasteOptionsAdapter;
 
@@ -31,7 +27,7 @@ import butterknife.Unbinder;
 
 public class PasteOptionsDialog extends BaseDialogFragment implements PasteOptionsContract.View {
 
-    private static final String ARG_COMPARISON_ID = "comparson_id";
+    private static final String ARG_COMPARISON_ID = "comparison_id";
 
     @BindView(R.id.recycler_options) RecyclerView recyclerOptions;
 
@@ -43,8 +39,15 @@ public class PasteOptionsDialog extends BaseDialogFragment implements PasteOptio
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getControllerComponent().inject(this);
         presenter.attachView(this);
+
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("no arguments");
+        }
+        String comparisonId = getArguments().getString(ARG_COMPARISON_ID);
+        presenter.setArgs(comparisonId);
     }
 
     @Nullable
@@ -53,26 +56,30 @@ public class PasteOptionsDialog extends BaseDialogFragment implements PasteOptio
         View view = inflater.inflate(R.layout.dialog_paste_options, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        if (getArguments() == null) {
-            throw new IllegalArgumentException("no arguments");
-        }
-        String comparisonId = getArguments().getString(ARG_COMPARISON_ID);
-
         recyclerOptions.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerOptions.setAdapter(adapter);
 
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         String clipboardContent = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
-        presenter.start(comparisonId, clipboardContent);
+        presenter.start(clipboardContent);
+    }
 
-        return view;
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        presenter.stop();
     }
 
     @Override

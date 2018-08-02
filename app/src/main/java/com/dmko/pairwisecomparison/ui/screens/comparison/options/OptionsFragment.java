@@ -5,18 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ViewUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -59,6 +55,12 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
 
         getControllerComponent().inject(this);
         presenter.attachView(this);
+
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("no arguments");
+        }
+        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        presenter.setArgs(comparisonId);
     }
 
     @Nullable
@@ -69,20 +71,26 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
         unbinder = ButterKnife.bind(this, view);
 
         setupRecyclerView();
-        String comparisonId = null;
-        if (getArguments() != null) {
-            comparisonId = getArguments().getString(ARG_COMP_ID);
-        }
-        presenter.start(comparisonId);
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        presenter.stop();
     }
 
     @Override
@@ -120,30 +128,24 @@ public class OptionsFragment extends BaseFragment implements OptionsContract.Vie
 
     @Override
     public void setOptions(List<Option> options) {
-        if (options.size() == 0) {
-            recyclerOptions.setVisibility(View.GONE);
-            textEmptyTitle.setVisibility(View.VISIBLE);
-            textEmptyDescription.setVisibility(View.VISIBLE);
-        } else {
-            adapter.setOptions(options);
-            recyclerOptions.setVisibility(View.VISIBLE);
-            textEmptyTitle.setVisibility(View.GONE);
-            textEmptyDescription.setVisibility(View.GONE);
-        }
+        adapter.setOptions(options);
+        recyclerOptions.setVisibility(View.VISIBLE);
+        textEmptyTitle.setVisibility(View.GONE);
+        textEmptyDescription.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setEmptyOptions() {
+        recyclerOptions.setVisibility(View.GONE);
+        textEmptyTitle.setVisibility(View.VISIBLE);
+        textEmptyDescription.setVisibility(View.VISIBLE);
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void showOptionDialog(String comparisonId, String optionId) {
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(TAG_DIALOG);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
         DialogFragment dialog = AddEditOptionDialog.newInstance(comparisonId, optionId);
-        dialog.show(ft, TAG_DIALOG);
+        showDialog(dialog);
     }
 
     @SuppressWarnings("ConstantConditions")

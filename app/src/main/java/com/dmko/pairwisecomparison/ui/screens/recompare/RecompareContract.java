@@ -25,7 +25,9 @@ public interface RecompareContract {
 
     interface Presenter extends BasePresenter<View> {
 
-        void loadOptionComparisons(String comparisonId);
+        void setArgs(String comparisonId);
+
+        void start();
 
         void updateOptionComparison(int newProgress);
 

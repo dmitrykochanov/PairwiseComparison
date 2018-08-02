@@ -10,6 +10,7 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.filte
 import java.util.List;
 
 public class FilterTypesAdapter extends ArrayAdapter<OptionComparisonEntryFilter> {
+
     private List<OptionComparisonEntryFilter> filters;
 
     public FilterTypesAdapter(@NonNull Context context, List<OptionComparisonEntryFilter> filters) {

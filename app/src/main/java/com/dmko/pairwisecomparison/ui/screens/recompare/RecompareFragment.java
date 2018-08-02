@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +27,6 @@ import butterknife.Unbinder;
 public class RecompareFragment extends BaseFragment implements RecompareContract.View, PromptPickerDialog.OnPromptTextPickedListener {
 
     private static final String ARG_COMPARISON_ID = "comparison_id";
-    private static final String TAG_DIALOG = "dialog";
-
-    public static RecompareFragment newInstance(String comparisonId) {
-        Bundle args = new Bundle();
-        args.putString(ARG_COMPARISON_ID, comparisonId);
-        RecompareFragment fragment = new RecompareFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @BindView(R.id.view_option_comparison) OptionComparisonView viewOptionComparison;
     @BindView(R.id.image_next) ImageView imageNext;
@@ -53,8 +42,15 @@ public class RecompareFragment extends BaseFragment implements RecompareContract
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getControllerComponent().inject(this);
         presenter.attachView(this);
+
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("No arguments");
+        }
+        String comparisonId = getArguments().getString(ARG_COMPARISON_ID);
+        presenter.setArgs(comparisonId);
     }
 
     @Nullable
@@ -63,19 +59,24 @@ public class RecompareFragment extends BaseFragment implements RecompareContract
         View view = inflater.inflate(R.layout.fragment_recompare, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        if (getArguments() == null) {
-            throw new IllegalArgumentException("No arguments");
-        }
-        String comparisonId = getArguments().getString(ARG_COMPARISON_ID);
-        presenter.loadOptionComparisons(comparisonId);
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.stop();
         unbinder.unbind();
     }
 
@@ -102,16 +103,9 @@ public class RecompareFragment extends BaseFragment implements RecompareContract
 
     @OnClick(R.id.text_prompt)
     void onSelectPromptClicked() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(TAG_DIALOG);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
         DialogFragment dialog = new PromptPickerDialog();
         dialog.setTargetFragment(this, 0);
-        dialog.show(ft, TAG_DIALOG);
+        showDialog(dialog);
     }
 
     @Override
@@ -170,5 +164,13 @@ public class RecompareFragment extends BaseFragment implements RecompareContract
     @Override
     public void onPromptPicked(String prompt) {
         presenter.savePromptText(prompt);
+    }
+
+    public static RecompareFragment newInstance(String comparisonId) {
+        Bundle args = new Bundle();
+        args.putString(ARG_COMPARISON_ID, comparisonId);
+        RecompareFragment fragment = new RecompareFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

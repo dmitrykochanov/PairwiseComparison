@@ -1,98 +1,68 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult;
 
 import com.dmko.pairwisecomparison.data.entities.Option;
-import com.dmko.pairwisecomparison.data.entities.OptionCompareResultEntry;
-import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
+import com.dmko.pairwisecomparison.interactors.ComparisonResultCalculator;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
 public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResultContract.View> implements ComparisonResultContract.Presenter {
+
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
-    private PublishSubject<Integer> chartTypeSubject;
+    private ComparisonResultCalculator comparisonResultCalculator;
 
-    public ComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
+    private String comparisonId;
+    private String comparisonName;
+    private Map<Option, Integer> results;
+
+    public ComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, ComparisonResultCalculator comparisonResultCalculator) {
         this.schedulers = schedulers;
         this.optionsRepository = optionsRepository;
-        chartTypeSubject = PublishSubject.create();
+        this.comparisonResultCalculator = comparisonResultCalculator;
     }
 
     @Override
-    public void start(String comparisonId) {
+    public void setArgs(String comparisonId, String comparisonName) {
+        this.comparisonId = comparisonId;
+        this.comparisonName = comparisonName;
+    }
+
+    @Override
+    public void start() {
         Timber.tag(LOG_APP);
         Timber.i("Starting %s with comparisonId = %s", this.getClass().getSimpleName(), comparisonId);
 
         getView().showLoading(true);
 
-        Flowable<Map<Option, Integer>> calculatedResultsFlowable = optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
-                .subscribeOn(schedulers.io())
-                .map(optionComparisonEntries -> {
-                    Timber.tag(LOG_APP);
-                    Timber.i("Calculating option results for %s[%d]", OptionComparisonEntry.class.getSimpleName(), optionComparisonEntries.size());
-
-                    Map<Option, Integer> results = new HashMap<>();
-                    for (OptionComparisonEntry entry : optionComparisonEntries) {
-                        if (!results.containsKey(entry.getFirstOption())) {
-                            results.put(entry.getFirstOption(), 0);
-                        }
-                        if (!results.containsKey(entry.getSecondOption())) {
-                            results.put(entry.getSecondOption(), 0);
-                        }
-
-                        Option key = entry.getProgress() < 0 ? entry.getFirstOption() : entry.getSecondOption();
-
-                        Integer currentProgress = results.get(key);
-                        currentProgress += Math.abs(entry.getProgress());
-                        results.put(key, currentProgress);
-                    }
-
-                    int progressSum = 0;
-                    for (Integer progress : results.values()) {
-                        progressSum += progress;
-                    }
-
-                    if (progressSum != 0) {
-                        for (Option option : results.keySet()) {
-                            int progressPercentage = Math.round((float) results.get(option) / progressSum * 100);
-                            results.put(option, progressPercentage);
-                        }
-                    } else {
-                        results.clear();
-                    }
-                    return results;
-                });
-
-        Flowable<Integer> chartTypeFlowable = chartTypeSubject.toFlowable(BackpressureStrategy.BUFFER);
-
-        addDisposable(Flowable.combineLatest(calculatedResultsFlowable, chartTypeFlowable, OptionCompareResultEntry::new)
+        addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
+                .map(comparisonResultCalculator::calculateComparisonResult)
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
                 .subscribe(results -> {
-                    getView().showLoading(false);
-                    getView().setResults(results.getResults(), results.getChartType());
+                    if (isViewAttached()) {
+                        this.results = results;
+                        getView().setResults(results);
+                        getView().showLoading(false);
+                    }
                 }));
     }
 
     @Override
-    public void setChartType(int chartType) {
-        chartTypeSubject.onNext(chartType);
+    public void onChartTypeChanged() {
+        getView().setResults(results);
     }
 
     @Override
     public void saveChartSelected(int chartType) {
-        getView().saveChart(chartType);
+        getView().saveChart(chartType, comparisonName);
     }
 
     @Override

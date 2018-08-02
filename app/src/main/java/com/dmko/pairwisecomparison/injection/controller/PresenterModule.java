@@ -4,6 +4,7 @@ package com.dmko.pairwisecomparison.injection.controller;
 import com.dmko.pairwisecomparison.data.repositories.ComparisonRepository;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
 import com.dmko.pairwisecomparison.injection.scopes.ControllerScope;
+import com.dmko.pairwisecomparison.interactors.ComparisonResultCalculator;
 import com.dmko.pairwisecomparison.ui.screens.addeditcomparison.AddEditComparisonContract;
 import com.dmko.pairwisecomparison.ui.screens.addeditcomparison.AddEditComparisonPresenter;
 import com.dmko.pairwisecomparison.ui.screens.addeditoption.AddEditOptionContract;
@@ -13,7 +14,7 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.Compar
 import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.ComparisonResultPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsPresenter;
-import com.dmko.pairwisecomparison.ui.screens.comparison.options.ComparisonPresenter;
+import com.dmko.pairwisecomparison.ui.screens.comparison.ComparisonPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsContract;
@@ -44,8 +45,8 @@ public class PresenterModule {
 
     @Provides
     @ControllerScope
-    public ComparisonResultContract.Presenter provideComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
-        return new ComparisonResultPresenter(schedulers, optionsRepository);
+    public ComparisonResultContract.Presenter provideComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, ComparisonResultCalculator comparisonResultCalculator) {
+        return new ComparisonResultPresenter(schedulers, optionsRepository, comparisonResultCalculator);
     }
 
     @Provides

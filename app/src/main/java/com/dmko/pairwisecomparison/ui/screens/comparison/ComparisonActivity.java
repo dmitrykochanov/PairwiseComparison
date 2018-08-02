@@ -12,7 +12,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
@@ -35,7 +34,6 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
 
     private static final String EXTRA_COMP_ID = "com.dmko.comp_id";
     private static final String EXTRA_COMP_NAME = "com.dmko.comp_name";
-    private static final String TAG_DIALOG = "dialog";
 
     private static final int NUMBER_OF_TABS = 3;
     private static final int COMPARISON_RESULT_TAB = 0;
@@ -126,9 +124,14 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.stop();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.stop();
         presenter.detachView();
     }
 
@@ -139,18 +142,10 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
             Snackbar.make(toolbar, R.string.snackbar_empty_clipboard, Snackbar.LENGTH_LONG).show();
         } else {
             floatingActionMenu.close(true);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment prev = getSupportFragmentManager().findFragmentByTag(TAG_DIALOG);
-            if (prev != null) {
-                ft.remove(prev);
-            }
-            ft.addToBackStack(null);
-
             DialogFragment dialog = PasteOptionsDialog.newInstance(comparisonId);
-            dialog.show(ft, TAG_DIALOG);
+            showDialog(dialog);
         }
     }
-
 
     @Override
     public void showNothingToCompareDialog() {

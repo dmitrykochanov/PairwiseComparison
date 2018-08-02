@@ -10,10 +10,13 @@ import timber.log.Timber;
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
 public class AddEditOptionPresenter extends BasePresenterImpl<AddEditOptionContract.View> implements AddEditOptionContract.Presenter {
+
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
+
+    private String comparisonId;
+    private String optionId;
     private Option option;
-    private boolean isNew;
 
     public AddEditOptionPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
         this.schedulers = schedulers;
@@ -21,16 +24,20 @@ public class AddEditOptionPresenter extends BasePresenterImpl<AddEditOptionContr
     }
 
     @Override
-    public void start(String comparisonId, String optionId) {
+    public void setArgs(String comparisonId, String optionId) {
+        this.comparisonId = comparisonId;
+        this.optionId = optionId;
+    }
+
+    @Override
+    public void start() {
         Timber.tag(LOG_APP);
         Timber.i("Starting %s with optionId = %s, comparisonId = %s", this.getClass().getSimpleName(), optionId, comparisonId);
 
         getView().showLoading(true);
         if (optionId == null) {
-            isNew = true;
             option = new Option();
             option.setComparisonId(comparisonId);
-            getView().setOption(option);
             getView().showLoading(false);
         } else {
             addDisposable(optionsRepository.getOptionById(optionId)
@@ -51,18 +58,27 @@ public class AddEditOptionPresenter extends BasePresenterImpl<AddEditOptionContr
 
     @Override
     public void saveOption(String optionName) {
-        Timber.tag(LOG_APP);
-        Timber.i("saving new %s name = %s", Option.class.getSimpleName(), optionName);
-
-        option.setName(optionName);
-        if (isNew) {
-            addDisposable(optionsRepository.insertOption(option)
-                    .subscribeOn(schedulers.io())
-                    .subscribe());
+        if (optionName.isEmpty()) {
+            getView().showEmptyNameError();
         } else {
-            addDisposable(optionsRepository.updateOption(option)
-                    .subscribeOn(schedulers.io())
-                    .subscribe());
+            option.setName(optionName);
+            if (optionId == null) {
+                addDisposable(optionsRepository.insertOption(option)
+                        .subscribeOn(schedulers.io())
+                        .subscribe(() -> {
+                            if (isViewAttached()) {
+                                getView().closeDialog();
+                            }
+                        }));
+            } else {
+                addDisposable(optionsRepository.updateOption(option)
+                        .subscribeOn(schedulers.io())
+                        .subscribe(() -> {
+                            if (isViewAttached()) {
+                                getView().closeDialog();
+                            }
+                        }));
+            }
         }
     }
 }

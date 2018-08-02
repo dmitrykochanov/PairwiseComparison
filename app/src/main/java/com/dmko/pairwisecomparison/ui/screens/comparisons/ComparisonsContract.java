@@ -7,13 +7,16 @@ import com.dmko.pairwisecomparison.ui.base.mvp.BaseView;
 import java.util.List;
 
 public interface ComparisonsContract {
+
     interface View extends BaseView {
 
         void showLoading(boolean isLoading);
 
         void setComparisons(List<Comparison> comparisons);
 
-        void showComparisonDialog(String comparisonId);
+        void setEmptyComparisons();
+
+        void showAddEditComparisonDialog(String comparisonId);
 
         void openComparison(Comparison comparison);
     }

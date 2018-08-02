@@ -12,6 +12,7 @@ import timber.log.Timber;
 import static com.dmko.pairwisecomparison.utils.LogTags.LOG_APP;
 
 public class ComparisonsPresenter extends BasePresenterImpl<ComparisonsContract.View> implements ComparisonsContract.Presenter {
+
     private SchedulersFacade schedulers;
     private ComparisonRepository repository;
 
@@ -36,7 +37,11 @@ public class ComparisonsPresenter extends BasePresenterImpl<ComparisonsContract.
                     Timber.i("%s sending to %s, %s[%d]", this.getClass().getSimpleName(), getView().getClass().getSimpleName(), Comparison.class.getSimpleName(), comparisons.size());
 
                     if (isViewAttached()) {
-                        getView().setComparisons(comparisons);
+                        if (comparisons.isEmpty()) {
+                            getView().setEmptyComparisons();
+                        } else {
+                            getView().setComparisons(comparisons);
+                        }
                         getView().showLoading(false);
                     }
                 }));
@@ -49,12 +54,12 @@ public class ComparisonsPresenter extends BasePresenterImpl<ComparisonsContract.
 
     @Override
     public void addComparisonSelected() {
-        getView().showComparisonDialog(null);
+        getView().showAddEditComparisonDialog(null);
     }
 
     @Override
     public void updateComparisonSelected(Comparison comparison) {
-        getView().showComparisonDialog(comparison.getId());
+        getView().showAddEditComparisonDialog(comparison.getId());
     }
 
     @Override

@@ -18,8 +18,6 @@ import butterknife.ButterKnife;
 
 public class ComparisonsActivity extends BaseActivity {
 
-    private static final String DIALOG_TAG = "dialog";
-
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab_add) FloatingActionButton fabAdd;
 
@@ -55,8 +53,7 @@ public class ComparisonsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_licenses:
-                LicensesDialog licensesDialog = new LicensesDialog();
-                licensesDialog.show(getSupportFragmentManager(), DIALOG_TAG);
+                showDialog(new LicensesDialog());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

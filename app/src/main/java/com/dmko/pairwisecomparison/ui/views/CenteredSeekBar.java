@@ -12,8 +12,8 @@ import android.util.AttributeSet;
 import com.dmko.pairwisecomparison.R;
 
 public class CenteredSeekBar extends AppCompatSeekBar {
+
     private int progressColor = getResources().getColor(R.color.colorAccent);
-    private int backgroundColor = Color.GRAY;
 
     private Rect rect;
     private Paint paint;
@@ -44,7 +44,7 @@ public class CenteredSeekBar extends AppCompatSeekBar {
                 getWidth() - getThumbOffset(),
                 (getHeight() / 2) + (seekBarHeight / 2));
 
-        paint.setColor(backgroundColor);
+        paint.setColor(Color.GRAY);
 
         canvas.drawRect(rect, paint);
 

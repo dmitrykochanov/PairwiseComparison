@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseActivity;
-import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

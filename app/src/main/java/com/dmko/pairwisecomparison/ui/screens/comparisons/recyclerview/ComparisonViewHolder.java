@@ -14,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ComparisonViewHolder extends RecyclerView.ViewHolder {
+
     @BindView(R.id.text_name) TextView textName;
     @BindView(R.id.image_edit) ImageView imageEdit;
     @BindView(R.id.image_delete) ImageView imageDelete;

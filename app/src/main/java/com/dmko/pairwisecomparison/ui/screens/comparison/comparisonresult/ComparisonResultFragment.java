@@ -32,14 +32,11 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +51,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 public class ComparisonResultFragment extends BaseFragment implements ComparisonResultContract.View {
+
     private static final String ARG_COMP_ID = "comp_id";
     private static final String ARG_COMP_NAME = "comp_name";
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 0;
@@ -73,7 +71,6 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     @Inject ComparisonResultAdapter adapter;
     @Inject ChartTypesAdapter spinnerAdapter;
 
-    private String comparisonName;
     private Unbinder unbinder;
 
     @Override
@@ -82,6 +79,13 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
 
         getControllerComponent().inject(this);
         presenter.attachView(this);
+
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("no arguments");
+        }
+        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        String comparisonName = getArguments().getString(ARG_COMP_NAME);
+        presenter.setArgs(comparisonId, comparisonName);
     }
 
     @Nullable
@@ -91,64 +95,30 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         View view = inflater.inflate(R.layout.fragment_comparison_result, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        pieChartResults.setVisibility(View.GONE);
-        pieChartResults.setDrawHoleEnabled(false);
-        pieChartResults.setUsePercentValues(true);
-        pieChartResults.setEntryLabelColor(Color.BLACK);
-        pieChartResults.setEntryLabelTextSize(14f);
-        pieChartResults.setDrawEntryLabels(true);
-        pieChartResults.setDescription(null);
-        pieChartResults.getLegend().setEnabled(false);
-
-        barChartResults.setVisibility(View.GONE);
-        barChartResults.setDescription(null);
-        barChartResults.getLegend().setEnabled(false);
-        barChartResults.getAxisLeft().setDrawGridLines(false);
-        barChartResults.getAxisLeft().setDrawLabels(false);
-        barChartResults.getAxisLeft().setDrawAxisLine(false);
-        barChartResults.getAxisRight().setDrawGridLines(false);
-        barChartResults.getAxisRight().setDrawLabels(false);
-        barChartResults.getAxisRight().setDrawAxisLine(false);
-        barChartResults.getXAxis().setDrawGridLines(false);
-        barChartResults.getXAxis().setDrawLabels(false);
-        barChartResults.getXAxis().setDrawAxisLine(false);
-        barChartResults.getAxisLeft().setAxisMinimum(0);
-
-        recyclerResults.setVisibility(View.GONE);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerResults.setLayoutManager(layoutManager);
-        recyclerResults.setAdapter(adapter);
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
-        recyclerResults.addItemDecoration(itemDecoration);
-
-        spinnerChartTypes.setAdapter(spinnerAdapter);
-        spinnerChartTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int chartType, long id) {
-                presenter.setChartType(chartType);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        String comparisonId = null;
-        if (getArguments() != null) {
-            comparisonId = getArguments().getString(ARG_COMP_ID);
-            comparisonName = getArguments().getString(ARG_COMP_NAME);
-        }
-        presenter.start(comparisonId);
+        setupPieChart();
+        setupBarChart();
+        setupList();
+        setupSpinner();
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        presenter.stop();
     }
 
     @Override
@@ -162,7 +132,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == WRITE_EXTERNAL_STORAGE_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            saveChart(spinnerChartTypes.getSelectedItemPosition());
+            presenter.saveChartSelected(spinnerChartTypes.getSelectedItemPosition());
         }
     }
 
@@ -172,49 +142,50 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     }
 
     @Override
-    public void setResults(Map<Option, Integer> results, int chartType) {
+    public void setResults(Map<Option, Integer> results) {
+        int chartType = spinnerChartTypes.getSelectedItemPosition();
         Timber.i("Setting results with chart type = %d", chartType);
+
         if (results.size() == 0) {
+
             pieChartResults.setVisibility(View.GONE);
             barChartResults.setVisibility(View.GONE);
             spinnerChartTypes.setVisibility(View.GONE);
             recyclerResults.setVisibility(View.GONE);
             textEmptyTitle.setVisibility(View.VISIBLE);
             textEmptyDescription.setVisibility(View.VISIBLE);
-
         } else if (chartType == PIE_CHART) {
+
             textEmptyTitle.setVisibility(View.GONE);
             textEmptyDescription.setVisibility(View.GONE);
             barChartResults.setVisibility(View.GONE);
             recyclerResults.setVisibility(View.GONE);
             spinnerChartTypes.setVisibility(View.VISIBLE);
             pieChartResults.setVisibility(View.VISIBLE);
-
-            setupPieChart(results);
-
+            setResultsToPieChart(results);
         } else if (chartType == BAR_CHART) {
+
             textEmptyTitle.setVisibility(View.GONE);
             textEmptyDescription.setVisibility(View.GONE);
             pieChartResults.setVisibility(View.GONE);
             recyclerResults.setVisibility(View.GONE);
             spinnerChartTypes.setVisibility(View.VISIBLE);
             barChartResults.setVisibility(View.VISIBLE);
-
-            setupBarChart(results);
+            setResultsToBarChart(results);
         } else if (chartType == LIST) {
+
             textEmptyTitle.setVisibility(View.GONE);
             textEmptyDescription.setVisibility(View.GONE);
             pieChartResults.setVisibility(View.GONE);
             barChartResults.setVisibility(View.GONE);
             spinnerChartTypes.setVisibility(View.VISIBLE);
             recyclerResults.setVisibility(View.VISIBLE);
-
-            setupList(results);
+            setResultsToList(results);
         }
     }
 
     @Override
-    public void saveChart(int chartType) {
+    public void saveChart(int chartType, String comparisonName) {
         switch (chartType) {
             case PIE_CHART:
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -241,7 +212,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         }
     }
 
-    private void setupPieChart(Map<Option, Integer> results) {
+    private void setResultsToPieChart(Map<Option, Integer> results) {
         List<PieEntry> pieEntries = new ArrayList<>(results.size());
         for (Option option : results.keySet()) {
             int progress = results.get(option);
@@ -264,7 +235,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         pieChartResults.animateY(500);
     }
 
-    private void setupBarChart(Map<Option, Integer> results) {
+    private void setResultsToBarChart(Map<Option, Integer> results) {
         List<BarEntry> barEntries = new ArrayList<>(results.size());
         List<Map.Entry<Option, Integer>> entries = new ArrayList<>(results.entrySet());
         Collections.sort(entries, (e1, e2) -> e1.getValue().compareTo(e2.getValue()));
@@ -281,14 +252,11 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         barDataSet.setDrawValues(true);
 
         BarData barData = new BarData(barDataSet);
-        barData.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                if (value == 0.001f) {
-                    return entry.getData().toString();
-                } else {
-                    return "";
-                }
+        barData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> {
+            if (value == 0.001f) {
+                return entry.getData().toString();
+            } else {
+                return "";
             }
         });
         barData.setValueTextSize(14f);
@@ -297,10 +265,61 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         barChartResults.animateY(500);
     }
 
-    private void setupList(Map<Option, Integer> results) {
+    private void setResultsToList(Map<Option, Integer> results) {
         List<Map.Entry<Option, Integer>> entries = new ArrayList<>(results.entrySet());
         Collections.sort(entries, Collections.reverseOrder((e1, e2) -> e1.getValue().compareTo(e2.getValue())));
         adapter.setResults(entries);
+    }
+
+    private void setupPieChart() {
+        pieChartResults.setVisibility(View.GONE);
+        pieChartResults.setDrawHoleEnabled(false);
+        pieChartResults.setUsePercentValues(true);
+        pieChartResults.setEntryLabelColor(Color.BLACK);
+        pieChartResults.setEntryLabelTextSize(14f);
+        pieChartResults.setDrawEntryLabels(true);
+        pieChartResults.setDescription(null);
+        pieChartResults.getLegend().setEnabled(false);
+    }
+
+    private void setupBarChart() {
+        barChartResults.setVisibility(View.GONE);
+        barChartResults.setDescription(null);
+        barChartResults.getLegend().setEnabled(false);
+        barChartResults.getAxisLeft().setDrawGridLines(false);
+        barChartResults.getAxisLeft().setDrawLabels(false);
+        barChartResults.getAxisLeft().setDrawAxisLine(false);
+        barChartResults.getAxisRight().setDrawGridLines(false);
+        barChartResults.getAxisRight().setDrawLabels(false);
+        barChartResults.getAxisRight().setDrawAxisLine(false);
+        barChartResults.getXAxis().setDrawGridLines(false);
+        barChartResults.getXAxis().setDrawLabels(false);
+        barChartResults.getXAxis().setDrawAxisLine(false);
+        barChartResults.getAxisLeft().setAxisMinimum(0);
+    }
+
+    private void setupList() {
+        recyclerResults.setVisibility(View.GONE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerResults.setLayoutManager(layoutManager);
+        recyclerResults.setAdapter(adapter);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
+        recyclerResults.addItemDecoration(itemDecoration);
+    }
+
+    private void setupSpinner() {
+        spinnerChartTypes.setAdapter(spinnerAdapter);
+        spinnerChartTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int chartType, long id) {
+                presenter.onChartTypeChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     public static ComparisonResultFragment newInstance(String comparisonId, String comparisonName) {

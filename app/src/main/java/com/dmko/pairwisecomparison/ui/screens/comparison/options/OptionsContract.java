@@ -7,18 +7,23 @@ import com.dmko.pairwisecomparison.ui.base.mvp.BaseView;
 import java.util.List;
 
 public interface OptionsContract {
+
     interface View extends BaseView {
 
         void showLoading(boolean isLoading);
 
         void setOptions(List<Option> options);
 
+        void setEmptyOptions();
+
         void showOptionDialog(String comparisonId, String optionId);
     }
 
     interface Presenter extends BasePresenter<View> {
 
-        void start(String comparisonId);
+        void setArgs(String comparisonId);
+
+        void start();
 
         void updateOptionSelected(Option option);
 

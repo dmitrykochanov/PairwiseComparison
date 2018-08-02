@@ -39,7 +39,8 @@
             android:hint="@string/hint_comparison_name"
             android:imeOptions="actionDone"
             android:maxLines="1"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"/>
     </android.support.design.widget.TextInputLayout>
 
     <Button

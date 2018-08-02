@@ -1,5 +1,6 @@
 package com.dmko.pairwisecomparison.ui.screens.addeditcomparison;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,9 +8,8 @@ import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +26,7 @@ import butterknife.OnEditorAction;
 import butterknife.Unbinder;
 
 public class AddEditComparisonDialog extends BaseDialogFragment implements AddEditComparisonContract.View {
+
     private static final String ARG_COMP_ID = "comp_id";
 
     @BindView(R.id.input_name) TextInputLayout inputName;
@@ -35,6 +36,7 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
     @Inject AddEditComparisonContract.Presenter presenter;
 
     private Unbinder unbinder;
+    private InputMethodManager inputMethodManager;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -42,6 +44,14 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
 
         getControllerComponent().inject(this);
         presenter.attachView(this);
+
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("no arguments");
+        }
+        String comparisonId = getArguments().getString(ARG_COMP_ID);
+        presenter.setArgs(comparisonId);
+
+        inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Nullable
@@ -52,26 +62,28 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
         View view = inflater.inflate(R.layout.dialog_add_edit_comparison, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        String comparisonId = getArguments().getString(ARG_COMP_ID);
-        if (comparisonId != null) {
-            textTitle.setText(R.string.title_edit_comparison);
-        }
-        presenter.start(comparisonId);
-
-        Window window = getDialog().getWindow();
-        if (window != null) {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            window.requestFeature(Window.FEATURE_NO_TITLE);
-        }
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        inputName.getEditText().requestFocus();
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        presenter.stop();
     }
 
     @Override
@@ -82,20 +94,14 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
 
     @OnClick(R.id.button_cancel)
     public void onButtonCancelClicked() {
-        getDialog().cancel();
+        closeDialog();
     }
 
     @OnClick(R.id.button_ok)
     @SuppressWarnings("ConstantConditions")
     public void onButtonOkClicked() {
         String newName = inputName.getEditText().getText().toString().trim();
-        if (newName.isEmpty()) {
-            inputName.setErrorEnabled(true);
-            inputName.setError(getString(R.string.error_empty_comparison_name));
-        } else {
-            presenter.saveComparison(newName);
-            getDialog().cancel();
-        }
+        presenter.saveComparison(newName);
     }
 
     @OnEditorAction(R.id.input_text_name)
@@ -114,11 +120,22 @@ public class AddEditComparisonDialog extends BaseDialogFragment implements AddEd
     @Override
     @SuppressWarnings("ConstantConditions")
     public void setComparison(Comparison comparison) {
+        textTitle.setText(R.string.title_edit_comparison);
         String name = comparison.getName();
-        if (name != null) {
-            inputName.getEditText().setText(name);
-            inputName.getEditText().setSelection(name.length());
-        }
+        inputName.getEditText().setText(name);
+        inputName.getEditText().setSelection(name.length());
+    }
+
+    @Override
+    public void showEmptyNameError() {
+        inputName.setErrorEnabled(true);
+        inputName.setError(getString(R.string.error_empty_comparison_name));
+    }
+
+    @Override
+    public void closeDialog() {
+        inputMethodManager.hideSoftInputFromWindow(inputName.getEditText().getWindowToken(), 0);
+        getDialog().cancel();
     }
 
     public static AddEditComparisonDialog newInstance(String comparisonId) {

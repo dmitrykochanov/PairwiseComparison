@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsContract;
-import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsPresenter;
 
 import java.util.Collections;
 import java.util.List;
