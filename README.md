@@ -28,3 +28,10 @@ This makes it easy to choose the most important problem to solve, or to pick the
 <img alt="App image" src="https://user-images.githubusercontent.com/18248775/43588974-bd195dc2-967e-11e8-829b-59c749f32aeb.png" width="33%" height="470">
 </div>
 
+## Open-source libraries used
+* Dagger 2
+* Rx Java 2 
+* Room
+* Butterknife
+* Timber
+* MPAndroidChart
