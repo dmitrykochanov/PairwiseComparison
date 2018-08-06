@@ -39,6 +39,7 @@ ext {
             support_constraint_layout: "com.android.support.constraint:constraint-layout:${versions.support_constraint_layout_version}",
             support_design           : "com.android.support:design:${versions.support_lib_version}",
             support_recycler         : "com.android.support:recyclerview-v7:${versions.support_lib_version}",
+            support_preference       : "com.android.support:preference-v7:${versions.support_lib_version}",
             butterknife              : "com.jakewharton:butterknife:${versions.butterknife_version}",
             butterknife_ap           : "com.jakewharton:butterknife-compiler:${versions.butterknife_version}",
             dagger                   : "com.google.dagger:dagger:${versions.dagger_version}",

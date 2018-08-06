@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="@string/title_prompt_default"
+        android:key="@string/key_prompt_text"
+        android:title="@string/title_prompt_text" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/key_show_percentage"
+        android:title="@string/title_show_percentage" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/chart_types"
+        android:entryValues="@array/chart_types_values"
+        android:key="@string/key_default_chart"
+        android:title="@string/title_chart_types" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/chart_colors"
+        android:entryValues="@array/chart_colors_values"
+        android:key="@string/key_chart_colors"
+        android:title="@string/title_chart_colors" />
+</PreferenceScreen>

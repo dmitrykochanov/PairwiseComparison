@@ -29,6 +29,7 @@ dependencies {
     implementation libs.support_recycler
     implementation libs.support_constraint_layout
     implementation libs.support_design
+    implementation libs.support_preference
 
     implementation libs.butterknife
     annotationProcessor libs.butterknife_ap

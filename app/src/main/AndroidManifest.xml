@@ -8,12 +8,12 @@
     <application
         android:name=".ui.App"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/backup_descriptor"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.screens.comparisons.ComparisonsActivity"
@@ -26,12 +26,17 @@
         </activity>
         <activity
             android:name=".ui.screens.comparison.ComparisonActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.screens.comparisons.ComparisonsActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.screens.recompare.RecompareActivity"
             android:parentActivityName=".ui.screens.comparison.ComparisonActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.screens.settings.SettingsActivity"
+            android:parentActivityName=".ui.screens.comparisons.ComparisonsActivity"
             android:screenOrientation="portrait" />
     </application>
 

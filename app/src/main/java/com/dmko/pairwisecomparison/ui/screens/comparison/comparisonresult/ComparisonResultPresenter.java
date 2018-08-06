@@ -2,6 +2,7 @@ package com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult;
 
 import com.dmko.pairwisecomparison.data.entities.Option;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
+import com.dmko.pairwisecomparison.data.repositories.SettingsRepository;
 import com.dmko.pairwisecomparison.interactors.ComparisonResultCalculator;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
@@ -17,15 +18,19 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
 
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
+    private SettingsRepository settingsRepository;
     private ComparisonResultCalculator comparisonResultCalculator;
 
     private String comparisonId;
     private String comparisonName;
     private Map<Option, Integer> results;
+    private boolean showDefault = true;
 
-    public ComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, ComparisonResultCalculator comparisonResultCalculator) {
+    public ComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository,
+                                     SettingsRepository settingsRepository, ComparisonResultCalculator comparisonResultCalculator) {
         this.schedulers = schedulers;
         this.optionsRepository = optionsRepository;
+        this.settingsRepository = settingsRepository;
         this.comparisonResultCalculator = comparisonResultCalculator;
     }
 
@@ -49,15 +54,14 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
                 .subscribe(results -> {
                     if (isViewAttached()) {
                         this.results = results;
-                        getView().setResults(results);
-                        getView().showLoading(false);
+                        sendResultsToView(results);
                     }
                 }));
     }
 
     @Override
     public void onChartTypeChanged() {
-        getView().setResults(results);
+        sendResultsToView(results);
     }
 
     @Override
@@ -73,5 +77,18 @@ public class ComparisonResultPresenter extends BasePresenterImpl<ComparisonResul
             stringBuilder.append(optionResult);
         }
         return stringBuilder.toString();
+    }
+
+    private void sendResultsToView(Map<Option, Integer> results) {
+        if (isViewAttached()) {
+            int defaultChart = settingsRepository.getDefaultChart();
+            if (showDefault) {
+                showDefault = false;
+            } else {
+                defaultChart = -1;
+            }
+            getView().setResults(results, defaultChart, settingsRepository.getChartColors(), settingsRepository.showPercentage());
+            getView().showLoading(false);
+        }
     }
 }

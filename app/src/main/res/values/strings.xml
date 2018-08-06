@@ -38,10 +38,44 @@
     <string name="hint_prompt_text">prompt text</string>
     <string name="filter_all">All</string>
     <string name="filter_not_compared">Not compared</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_prompt_text">Prompt text on compare screen</string>
+    <string name="title_show_percentage">Show percentage on result chart</string>
+    <string name="title_chart_types">Default chart type</string>
+    <string name="title_chart_colors">Chart colors</string>
+
+    <string name="key_prompt_text">prompt_text</string>
+    <string name="key_show_percentage">show_percentage</string>
+    <string name="key_default_chart">default_chart</string>
+    <string name="key_chart_colors">chart_colors</string>
 
     <string-array name="chart_types">
         <item>Pie Chart</item>
         <item>Bar Chart</item>
         <item>List</item>
+    </string-array>
+
+    <string-array name="chart_types_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="chart_colors">
+        <item>Colourful colors</item>
+        <item>Joyful colors</item>
+        <item>Liberty colors</item>
+        <item>Material colors</item>
+        <item>Pastel colors</item>
+        <item>Vordiplom colors</item>
+    </string-array>
+
+    <string-array name="chart_colors_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 </resources>

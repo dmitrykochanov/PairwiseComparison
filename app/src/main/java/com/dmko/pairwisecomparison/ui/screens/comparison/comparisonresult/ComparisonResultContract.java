@@ -13,7 +13,7 @@ public interface ComparisonResultContract {
 
         void showLoading(boolean isLoading);
 
-        void setResults(Map<Option, Integer> results);
+        void setResults(Map<Option, Integer> results, int defaultChart, int chartColor, boolean showPercentage);
 
         void saveChart(int chartType, String comparisonName);
     }

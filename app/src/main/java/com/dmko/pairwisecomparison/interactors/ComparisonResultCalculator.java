@@ -49,3 +49,4 @@ public class ComparisonResultCalculator {
         return results;
     }
 }
+

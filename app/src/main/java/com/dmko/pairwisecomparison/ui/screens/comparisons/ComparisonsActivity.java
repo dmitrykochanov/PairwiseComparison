@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseActivity;
 import com.dmko.pairwisecomparison.ui.screens.licenses.LicensesDialog;
+import com.dmko.pairwisecomparison.ui.screens.settings.SettingsActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +55,9 @@ public class ComparisonsActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.item_licenses:
                 showDialog(new LicensesDialog());
+                return true;
+            case R.id.item_settings:
+                startActivity(SettingsActivity.getIntent(this));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

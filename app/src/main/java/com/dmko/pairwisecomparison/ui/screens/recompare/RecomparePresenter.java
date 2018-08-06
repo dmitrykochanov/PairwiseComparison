@@ -2,6 +2,7 @@ package com.dmko.pairwisecomparison.ui.screens.recompare;
 
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
+import com.dmko.pairwisecomparison.data.repositories.SettingsRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
 
@@ -11,14 +12,16 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
 
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
+    private SettingsRepository settingsRepository;
 
     private int currentPosition = 0;
     private String comparisonId;
     private List<OptionComparisonEntry> optionComparisons;
 
-    public RecomparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
+    public RecomparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, SettingsRepository settingsRepository) {
         this.schedulers = schedulers;
         this.optionsRepository = optionsRepository;
+        this.settingsRepository = settingsRepository;
     }
 
     @Override
@@ -28,10 +31,7 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
 
     @Override
     public void start() {
-        if (optionsRepository.getPromptText() == null) {
-            optionsRepository.savePromptText(getView().getDefaultPromptText());
-        }
-        getView().setPromptText(optionsRepository.getPromptText());
+        getView().setPromptText(settingsRepository.getPromptText());
 
         addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .subscribeOn(schedulers.io())
@@ -68,14 +68,6 @@ public class RecomparePresenter extends BasePresenterImpl<RecompareContract.View
     public void onNextSelected() {
         currentPosition += 1;
         changeOptionComparison();
-    }
-
-    @Override
-    public void savePromptText(String prompt) {
-        optionsRepository.savePromptText(prompt);
-        if (isViewAttached()) {
-            getView().setPromptText(prompt);
-        }
     }
 
     private void changeOptionComparison() {

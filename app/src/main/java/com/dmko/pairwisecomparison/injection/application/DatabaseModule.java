@@ -4,6 +4,7 @@ package com.dmko.pairwisecomparison.injection.application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 import com.dmko.pairwisecomparison.data.AppDatabase;
 import com.dmko.pairwisecomparison.data.dao.ComparisonsDao;
@@ -39,7 +40,7 @@ public class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    public SharedPreferencesHelper provideSharedPreferencesHelper(SharedPreferences sharedPreferences) {
-        return new SharedPreferencesHelperImpl(sharedPreferences);
+    public SharedPreferencesHelper provideSharedPreferencesHelper(Resources resources, SharedPreferences sharedPreferences) {
+        return new SharedPreferencesHelperImpl(resources, sharedPreferences);
     }
 }

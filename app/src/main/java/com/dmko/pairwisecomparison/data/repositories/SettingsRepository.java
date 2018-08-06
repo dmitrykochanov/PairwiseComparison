@@ -1,6 +1,6 @@
-package com.dmko.pairwisecomparison.data.sharedoreferences;
+package com.dmko.pairwisecomparison.data.repositories;
 
-public interface SharedPreferencesHelper {
+public interface SettingsRepository {
 
     String getPromptText();
 

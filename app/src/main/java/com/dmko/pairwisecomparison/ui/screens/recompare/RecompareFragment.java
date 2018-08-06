@@ -3,7 +3,6 @@ package com.dmko.pairwisecomparison.ui.screens.recompare;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import com.dmko.pairwisecomparison.R;
 import com.dmko.pairwisecomparison.data.entities.OptionComparisonEntry;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseFragment;
-import com.dmko.pairwisecomparison.ui.screens.promptpicker.PromptPickerDialog;
 import com.dmko.pairwisecomparison.ui.views.OptionComparisonView;
 
 import javax.inject.Inject;
@@ -24,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class RecompareFragment extends BaseFragment implements RecompareContract.View, PromptPickerDialog.OnPromptTextPickedListener {
+public class RecompareFragment extends BaseFragment implements RecompareContract.View {
 
     private static final String ARG_COMPARISON_ID = "comparison_id";
 
@@ -101,13 +99,6 @@ public class RecompareFragment extends BaseFragment implements RecompareContract
         requireActivity().finish();
     }
 
-    @OnClick(R.id.text_prompt)
-    void onSelectPromptClicked() {
-        DialogFragment dialog = new PromptPickerDialog();
-        dialog.setTargetFragment(this, 0);
-        showDialog(dialog);
-    }
-
     @Override
     public void setCurrentOptionComparison(OptionComparisonEntry optionComparison) {
         viewOptionComparison.setOnProgressChangedListener(null);
@@ -154,16 +145,6 @@ public class RecompareFragment extends BaseFragment implements RecompareContract
     @Override
     public void setPromptText(String prompt) {
         textPrompt.setText(prompt);
-    }
-
-    @Override
-    public String getDefaultPromptText() {
-        return getString(R.string.title_prompt_default);
-    }
-
-    @Override
-    public void onPromptPicked(String prompt) {
-        presenter.savePromptText(prompt);
     }
 
     public static RecompareFragment newInstance(String comparisonId) {

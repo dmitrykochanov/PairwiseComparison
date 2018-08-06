@@ -3,6 +3,7 @@ package com.dmko.pairwisecomparison.injection.controller;
 
 import com.dmko.pairwisecomparison.data.repositories.ComparisonRepository;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
+import com.dmko.pairwisecomparison.data.repositories.SettingsRepository;
 import com.dmko.pairwisecomparison.injection.scopes.ControllerScope;
 import com.dmko.pairwisecomparison.interactors.ComparisonResultCalculator;
 import com.dmko.pairwisecomparison.ui.screens.addeditcomparison.AddEditComparisonContract;
@@ -45,8 +46,9 @@ public class PresenterModule {
 
     @Provides
     @ControllerScope
-    public ComparisonResultContract.Presenter provideComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, ComparisonResultCalculator comparisonResultCalculator) {
-        return new ComparisonResultPresenter(schedulers, optionsRepository, comparisonResultCalculator);
+    public ComparisonResultContract.Presenter provideComparisonResultPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository,
+                                                                               SettingsRepository settingsRepository, ComparisonResultCalculator comparisonResultCalculator) {
+        return new ComparisonResultPresenter(schedulers, optionsRepository, settingsRepository, comparisonResultCalculator);
     }
 
     @Provides
@@ -75,8 +77,8 @@ public class PresenterModule {
 
     @Provides
     @ControllerScope
-    public RecompareContract.Presenter provideRecomparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
-        return new RecomparePresenter(schedulers, optionsRepository);
+    public RecompareContract.Presenter provideRecomparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, SettingsRepository settingsRepository) {
+        return new RecomparePresenter(schedulers, optionsRepository, settingsRepository);
     }
 
     @Provides

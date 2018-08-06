@@ -26,8 +26,4 @@ public interface OptionsRepository {
     Flowable<List<OptionComparisonEntry>> getOptionComparisonEntriesByComparisonId(String comparisonId);
 
     Completable updateOptionComparison(OptionComparisonEntry optionComparison);
-
-    void savePromptText(String prompt);
-
-    String getPromptText();
 }

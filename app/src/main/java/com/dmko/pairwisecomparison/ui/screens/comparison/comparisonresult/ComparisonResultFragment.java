@@ -142,9 +142,38 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
     }
 
     @Override
-    public void setResults(Map<Option, Integer> results) {
-        int chartType = spinnerChartTypes.getSelectedItemPosition();
+    public void setResults(Map<Option, Integer> results, int defaultChart, int chartColor, boolean showPercentage) {
+        int chartType = defaultChart;
+        if (chartType == -1) {
+            chartType = spinnerChartTypes.getSelectedItemPosition();
+        } else {
+            spinnerChartTypes.setSelection(chartType);
+        }
         Timber.i("Setting results with chart type = %d", chartType);
+
+        int[] colors;
+        switch (chartColor) {
+            case 0:
+                colors = ColorTemplate.COLORFUL_COLORS;
+                break;
+            case 1:
+                colors = ColorTemplate.JOYFUL_COLORS;
+                break;
+            case 2:
+                colors = ColorTemplate.LIBERTY_COLORS;
+                break;
+            case 3:
+                colors = ColorTemplate.MATERIAL_COLORS;
+                break;
+            case 4:
+                colors = ColorTemplate.PASTEL_COLORS;
+                break;
+            case 5:
+                colors = ColorTemplate.VORDIPLOM_COLORS;
+                break;
+            default:
+                throw new IllegalArgumentException("Incorrect color: " + chartColor);
+        }
 
         if (results.size() == 0) {
 
@@ -162,7 +191,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
             recyclerResults.setVisibility(View.GONE);
             spinnerChartTypes.setVisibility(View.VISIBLE);
             pieChartResults.setVisibility(View.VISIBLE);
-            setResultsToPieChart(results);
+            setResultsToPieChart(results, showPercentage, colors);
         } else if (chartType == BAR_CHART) {
 
             textEmptyTitle.setVisibility(View.GONE);
@@ -171,7 +200,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
             recyclerResults.setVisibility(View.GONE);
             spinnerChartTypes.setVisibility(View.VISIBLE);
             barChartResults.setVisibility(View.VISIBLE);
-            setResultsToBarChart(results);
+            setResultsToBarChart(results, showPercentage, colors);
         } else if (chartType == LIST) {
 
             textEmptyTitle.setVisibility(View.GONE);
@@ -212,7 +241,7 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         }
     }
 
-    private void setResultsToPieChart(Map<Option, Integer> results) {
+    private void setResultsToPieChart(Map<Option, Integer> results, boolean showPercentage, int[] colors) {
         List<PieEntry> pieEntries = new ArrayList<>(results.size());
         for (Option option : results.keySet()) {
             int progress = results.get(option);
@@ -223,32 +252,40 @@ public class ComparisonResultFragment extends BaseFragment implements Comparison
         Collections.sort(pieEntries, (p1, p2) -> Float.compare(p1.getValue(), p2.getValue()));
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "");
-        dataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        dataSet.setColors(colors);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
         PieData pieData = new PieData(dataSet);
-        pieData.setValueFormatter(new PercentFormatter());
-        pieData.setValueTextSize(14f);
-        pieData.setDrawValues(true);
+        if (showPercentage) {
+            pieData.setValueFormatter(new PercentFormatter());
+            pieData.setValueTextSize(14f);
+            pieData.setDrawValues(true);
+        } else {
+            pieData.setDrawValues(false);
+        }
         pieChartResults.setData(pieData);
         pieChartResults.animateY(500);
     }
 
-    private void setResultsToBarChart(Map<Option, Integer> results) {
+    private void setResultsToBarChart(Map<Option, Integer> results, boolean showPercentage, int[] colors) {
         List<BarEntry> barEntries = new ArrayList<>(results.size());
         List<Map.Entry<Option, Integer>> entries = new ArrayList<>(results.entrySet());
         Collections.sort(entries, (e1, e2) -> e1.getValue().compareTo(e2.getValue()));
         float y = 0;
         for (Map.Entry<Option, Integer> mapEntry : entries) {
+            String data = " " + mapEntry.getKey().getName();
+            if (showPercentage) {
+                data += "(" + mapEntry.getValue() + "%)";
+            }
             //Creating fake 0.001 bar to draw title to the right of it so it looks like the text is inside the main bar
-            BarEntry entry = new BarEntry(y, new float[]{0.001f, mapEntry.getValue()}, " " + mapEntry.getKey().getName() + "(" + mapEntry.getValue() + "%)");
+            BarEntry entry = new BarEntry(y, new float[]{0.001f, mapEntry.getValue()}, data);
             barEntries.add(entry);
             y += 1;
         }
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "");
-        barDataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        barDataSet.setColors(colors);
         barDataSet.setDrawValues(true);
 
         BarData barData = new BarData(barDataSet);

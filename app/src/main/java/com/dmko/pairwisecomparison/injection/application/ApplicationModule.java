@@ -4,6 +4,8 @@ package com.dmko.pairwisecomparison.injection.application;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.preference.PreferenceManager;
 
 import com.dmko.pairwisecomparison.injection.scopes.ApplicationScope;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
@@ -14,8 +16,6 @@ import dagger.Provides;
 
 @Module
 public class ApplicationModule {
-
-    private static final String SHARED_PREFERENCES_NAME = "prefs";
 
     private final Application application;
 
@@ -38,7 +38,13 @@ public class ApplicationModule {
     @Provides
     @ApplicationScope
     public SharedPreferences provideSharedPreferences(Context context) {
-        return context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    @Provides
+    @ApplicationScope
+    public Resources provideResources(Context context) {
+        return context.getResources();
     }
 
     @Provides
