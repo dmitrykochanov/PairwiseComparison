@@ -20,6 +20,8 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsContract
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsPresenter;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsContract;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsPresenter;
+import com.dmko.pairwisecomparison.ui.screens.copycomparison.CopyComparisonContract;
+import com.dmko.pairwisecomparison.ui.screens.copycomparison.CopyComparisonPresenter;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsContract;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsPresenter;
 import com.dmko.pairwisecomparison.ui.screens.recompare.RecompareContract;
@@ -85,5 +87,11 @@ public class PresenterModule {
     @ControllerScope
     public ComparisonContract.Presenter provideComparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
         return new ComparisonPresenter(schedulers, optionsRepository);
+    }
+
+    @Provides
+    @ControllerScope
+    public CopyComparisonContract.Presenter provideCopyComparisonPresenter(SchedulersFacade schedulers, ComparisonRepository comparisonRepository) {
+        return new CopyComparisonPresenter(schedulers, comparisonRepository);
     }
 }

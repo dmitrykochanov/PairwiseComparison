@@ -19,4 +19,6 @@ public interface ComparisonRepository {
     Completable updateComparison(Comparison comparison);
 
     Completable deleteComparison(Comparison comparison);
+
+    Completable copyComparison(String comparisonId, String newName, boolean copyOptionComparisons);
 }

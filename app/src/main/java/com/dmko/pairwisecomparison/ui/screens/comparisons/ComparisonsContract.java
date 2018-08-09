@@ -19,6 +19,8 @@ public interface ComparisonsContract {
         void showAddEditComparisonDialog(String comparisonId);
 
         void openComparison(Comparison comparison);
+
+        void openCopyComparisonDialog(String comparisonId);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -32,5 +34,7 @@ public interface ComparisonsContract {
         void updateComparisonSelected(Comparison comparison);
 
         void deleteComparisonSelected(Comparison comparison);
+
+        void copyComparisonSelected(Comparison comparison);
     }
 }

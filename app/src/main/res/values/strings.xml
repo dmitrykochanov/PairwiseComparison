@@ -43,11 +43,14 @@
     <string name="title_show_percentage">Show percentage on result chart</string>
     <string name="title_chart_types">Default chart type</string>
     <string name="title_chart_colors">Chart colors</string>
-
     <string name="key_prompt_text">prompt_text</string>
     <string name="key_show_percentage">show_percentage</string>
     <string name="key_default_chart">default_chart</string>
     <string name="key_chart_colors">chart_colors</string>
+    <string name="title_copy_comparison">Copy comparison</string>
+    <string name="hint_old_comparison_name">Old name</string>
+    <string name="hint_new_comparison_name">New name</string>
+    <string name="hint_copy_option_comparisons">Copy option comparisons</string>
 
     <string-array name="chart_types">
         <item>Pie Chart</item>

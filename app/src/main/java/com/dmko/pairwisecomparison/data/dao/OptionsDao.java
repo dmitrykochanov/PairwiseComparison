@@ -56,8 +56,15 @@ public abstract class OptionsDao {
             " WHERE first." + Options.Cols.COMPARISON_ID + " = :comparisonId")
     public abstract Flowable<List<OptionComparisonEntry>> getOptionComparisonEntriesByComparisonId(String comparisonId);
 
+    @Query("SELECT oc.* " +
+            " FROM " + OptionComparisons.TABLE_NAME + " AS oc" +
+            " JOIN " + Options.TABLE_NAME + " AS options " +
+            " ON oc.first_option_id = options.id " +
+            " WHERE options.comparison_id = :comparisonId")
+    public abstract Flowable<List<OptionComparison>> getOptionComparisonsByComparisonId(String comparisonId);
+
     @Insert
-    public abstract void insertOptionComparisons(OptionComparison... optionComparisons);
+    public abstract void insertOptionComparisons(List<OptionComparison> optionComparisons);
 
     @Update
     public abstract void updateOptionComparison(OptionComparison optionComparison);
@@ -65,6 +72,6 @@ public abstract class OptionsDao {
     @Transaction
     public void insertOptionWithComparisons(Option option, List<OptionComparison> optionComparisons) {
         insertOption(option);
-        insertOptionComparisons(optionComparisons.toArray(new OptionComparison[optionComparisons.size()]));
+        insertOptionComparisons(optionComparisons);
     }
 }

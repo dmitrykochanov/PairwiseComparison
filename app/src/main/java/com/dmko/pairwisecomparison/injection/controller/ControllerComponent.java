@@ -9,6 +9,7 @@ import com.dmko.pairwisecomparison.ui.screens.comparison.comparisonresult.Compar
 import com.dmko.pairwisecomparison.ui.screens.comparison.optioncomparisons.OptionComparisonsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparison.options.OptionsFragment;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.ComparisonsFragment;
+import com.dmko.pairwisecomparison.ui.screens.copycomparison.CopyComparisonDialog;
 import com.dmko.pairwisecomparison.ui.screens.pasteoptions.PasteOptionsDialog;
 import com.dmko.pairwisecomparison.ui.screens.recompare.RecompareFragment;
 
@@ -35,4 +36,6 @@ public interface ControllerComponent {
     void inject(RecompareFragment recompareFragment);
 
     void inject(ComparisonActivity comparisonActivity);
+
+    void inject(CopyComparisonDialog copyComparisonDialog);
 }

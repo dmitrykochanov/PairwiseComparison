@@ -18,6 +18,7 @@ public class ComparisonViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.text_name) TextView textName;
     @BindView(R.id.image_edit) ImageView imageEdit;
     @BindView(R.id.image_delete) ImageView imageDelete;
+    @BindView(R.id.image_copy) ImageView imageCopy;
 
     private Comparison comparison;
 
@@ -27,6 +28,10 @@ public class ComparisonViewHolder extends RecyclerView.ViewHolder {
 
         itemView.setOnClickListener(v -> {
             presenter.openComparisonSelected(comparison);
+        });
+
+        imageCopy.setOnClickListener(v -> {
+            presenter.copyComparisonSelected(comparison);
         });
 
         imageEdit.setOnClickListener(v -> {

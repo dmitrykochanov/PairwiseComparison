@@ -20,6 +20,7 @@ import com.dmko.pairwisecomparison.ui.base.mvp.impl.BaseFragment;
 import com.dmko.pairwisecomparison.ui.screens.addeditcomparison.AddEditComparisonDialog;
 import com.dmko.pairwisecomparison.ui.screens.comparison.ComparisonActivity;
 import com.dmko.pairwisecomparison.ui.screens.comparisons.recyclerview.ComparisonsAdapter;
+import com.dmko.pairwisecomparison.ui.screens.copycomparison.CopyComparisonDialog;
 
 import java.util.List;
 
@@ -114,6 +115,12 @@ public class ComparisonsFragment extends BaseFragment implements ComparisonsCont
     public void openComparison(Comparison comparison) {
         Intent intent = ComparisonActivity.getIntent(getContext(), comparison.getId(), comparison.getName());
         startActivity(intent);
+    }
+
+    @Override
+    public void openCopyComparisonDialog(String comparisonId) {
+        DialogFragment dialog = CopyComparisonDialog.newInstance(comparisonId);
+        showDialog(dialog);
     }
 
     public void onFabAddClicked() {

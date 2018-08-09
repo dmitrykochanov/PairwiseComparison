@@ -68,4 +68,9 @@ public class ComparisonsPresenter extends BasePresenterImpl<ComparisonsContract.
                 .subscribeOn(schedulers.io())
                 .subscribe());
     }
+
+    @Override
+    public void copyComparisonSelected(Comparison comparison) {
+        getView().openCopyComparisonDialog(comparison.getId());
+    }
 }

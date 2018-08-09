@@ -19,8 +19,8 @@ public class RepositoryModule {
 
     @Provides
     @ApplicationScope
-    public ComparisonRepository provideComparisonRepository(ComparisonsDao comparisonsDao) {
-        return new ComparisonRepositoryImpl(comparisonsDao);
+    public ComparisonRepository provideComparisonRepository(ComparisonsDao comparisonsDao, OptionsDao optionsDao) {
+        return new ComparisonRepositoryImpl(comparisonsDao, optionsDao);
     }
 
     @Provides
