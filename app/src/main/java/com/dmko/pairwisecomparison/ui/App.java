@@ -24,12 +24,11 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if(LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
-
         if (BuildConfig.DEBUG) {
+            if (LeakCanary.isInAnalyzerProcess(this)) {
+                return;
+            }
+            LeakCanary.install(this);
             setupLogs();
             StrictMode.enableDefaults();
             Timber.plant(new Timber.DebugTree());
