@@ -69,6 +69,9 @@ public abstract class OptionsDao {
     @Update
     public abstract void updateOptionComparison(OptionComparison optionComparison);
 
+    @Update
+    public abstract void updateOptionComparisons(List<OptionComparison> optionComparisons);
+
     @Transaction
     public void insertOptionWithComparisons(Option option, List<OptionComparison> optionComparisons) {
         insertOption(option);

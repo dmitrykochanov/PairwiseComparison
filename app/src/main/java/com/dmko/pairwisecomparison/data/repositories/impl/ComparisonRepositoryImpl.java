@@ -107,4 +107,15 @@ public class ComparisonRepositoryImpl implements ComparisonRepository {
             optionsDao.insertOptionComparisons(newOptionComparisons);
         });
     }
+
+    @Override
+    public Completable clearOptionComparisons(String comparisonId) {
+        return new CompletableFromAction(() -> {
+            List<OptionComparison> optionComparisons = optionsDao.getOptionComparisonsByComparisonId(comparisonId).blockingFirst();
+            for (OptionComparison optionComparison : optionComparisons) {
+                optionComparison.setProgress(0);
+            }
+            optionsDao.updateOptionComparisons(optionComparisons);
+        });
+    }
 }

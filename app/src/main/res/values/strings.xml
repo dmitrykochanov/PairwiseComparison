@@ -34,6 +34,7 @@
     <string name="title_prompt_default">Which of these two options is more important?</string>
     <string name="menu_add_from_clipboard">Add options from clipboard</string>
     <string name="menu_recompare_options">Compare options one by one</string>
+    <string name="menu_clear_option_comparisons">Clear option comparisons</string>
     <string name="title_change_the_prompt">Change the prompt</string>
     <string name="hint_prompt_text">prompt text</string>
     <string name="filter_all">All</string>
@@ -51,6 +52,7 @@
     <string name="hint_old_comparison_name">Old name</string>
     <string name="hint_new_comparison_name">New name</string>
     <string name="hint_copy_option_comparisons">Copy option comparisons</string>
+
 
     <string-array name="chart_types">
         <item>Pie Chart</item>

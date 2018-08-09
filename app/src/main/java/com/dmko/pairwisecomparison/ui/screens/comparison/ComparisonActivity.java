@@ -47,6 +47,7 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
     @BindView(R.id.floating_action_menu) FloatingActionMenu floatingActionMenu;
     @BindView(R.id.fab_compare_options) FloatingActionButton fabCompareOptions;
     @BindView(R.id.fab_add_options) FloatingActionButton fabAddOptions;
+    @BindView(R.id.fab_clear_option_comparisons) FloatingActionButton fabClearOptionComparisons;
 
     @Inject ComparisonContract.Presenter presenter;
 
@@ -61,6 +62,7 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
 
         String comparisonId = getIntent().getStringExtra(EXTRA_COMP_ID);
         String comparisonName = getIntent().getStringExtra(EXTRA_COMP_NAME);
+        presenter.setArgs(comparisonId);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -115,11 +117,16 @@ public class ComparisonActivity extends BaseActivity implements ComparisonContra
         tabLayout.setupWithViewPager(viewPager);
 
         fabCompareOptions.setOnClickListener(v -> {
-            presenter.onOpenRecompareActivitySelected(comparisonId, comparisonName);
+            presenter.onOpenRecompareActivitySelected(comparisonName);
         });
 
         fabAddOptions.setOnClickListener(v -> {
             openPasteOptionsDialog(comparisonId);
+        });
+
+        fabClearOptionComparisons.setOnClickListener(v -> {
+            presenter.clearOptionComparisons();
+            floatingActionMenu.close(true);
         });
     }
 

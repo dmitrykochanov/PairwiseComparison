@@ -1,5 +1,6 @@
 package com.dmko.pairwisecomparison.ui.screens.comparison;
 
+import com.dmko.pairwisecomparison.data.repositories.ComparisonRepository;
 import com.dmko.pairwisecomparison.data.repositories.OptionsRepository;
 import com.dmko.pairwisecomparison.ui.base.mvp.impl.BasePresenterImpl;
 import com.dmko.pairwisecomparison.utils.SchedulersFacade;
@@ -10,14 +11,23 @@ public class ComparisonPresenter extends BasePresenterImpl<ComparisonContract.Vi
 
     private SchedulersFacade schedulers;
     private OptionsRepository optionsRepository;
+    private ComparisonRepository comparisonRepository;
 
-    public ComparisonPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
+    private String comparisonId;
+
+    public ComparisonPresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, ComparisonRepository comparisonRepository) {
         this.schedulers = schedulers;
         this.optionsRepository = optionsRepository;
+        this.comparisonRepository = comparisonRepository;
     }
 
     @Override
-    public void onOpenRecompareActivitySelected(String comparisonId, String comparisonName) {
+    public void setArgs(String comparisonId) {
+        this.comparisonId = comparisonId;
+    }
+
+    @Override
+    public void onOpenRecompareActivitySelected(String comparisonName) {
         addDisposable(optionsRepository.getOptionComparisonEntriesByComparisonId(comparisonId)
                 .firstOrError()
                 .map(List::size)
@@ -32,5 +42,12 @@ public class ComparisonPresenter extends BasePresenterImpl<ComparisonContract.Vi
                         }
                     }
                 }));
+    }
+
+    @Override
+    public void clearOptionComparisons() {
+        addDisposable(comparisonRepository.clearOptionComparisons(comparisonId)
+                .subscribeOn(schedulers.io())
+                .subscribe());
     }
 }

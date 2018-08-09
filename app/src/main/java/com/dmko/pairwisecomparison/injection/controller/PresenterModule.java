@@ -85,8 +85,8 @@ public class PresenterModule {
 
     @Provides
     @ControllerScope
-    public ComparisonContract.Presenter provideComparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository) {
-        return new ComparisonPresenter(schedulers, optionsRepository);
+    public ComparisonContract.Presenter provideComparePresenter(SchedulersFacade schedulers, OptionsRepository optionsRepository, ComparisonRepository comparisonRepository) {
+        return new ComparisonPresenter(schedulers, optionsRepository, comparisonRepository);
     }
 
     @Provides

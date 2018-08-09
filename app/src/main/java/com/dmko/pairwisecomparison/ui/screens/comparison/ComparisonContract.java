@@ -14,6 +14,10 @@ public interface ComparisonContract {
 
     interface Presenter extends BasePresenter<View> {
 
-        void onOpenRecompareActivitySelected(String comparisonId, String comparisonName);
+        void setArgs(String comparisonId);
+
+        void onOpenRecompareActivitySelected(String comparisonName);
+
+        void clearOptionComparisons();
     }
 }
