@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -8,7 +11,6 @@ android {
         targetSdkVersion 28
         versionCode 5
         versionName "5.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -25,6 +27,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation libs.kotlin
+    implementation libs.ktx
     implementation libs.support_appcompat
     implementation libs.support_recycler
     implementation libs.support_constraint_layout
@@ -32,17 +36,17 @@ dependencies {
     implementation libs.support_preference
 
     implementation libs.butterknife
-    annotationProcessor libs.butterknife_ap
+    kapt libs.butterknife_ap
 
     implementation libs.dagger
     implementation libs.dagger_android
-    annotationProcessor libs.dagger_ap
+    kapt libs.dagger_ap
 
     implementation libs.rx_java
     implementation libs.rx_java_android
 
     implementation libs.room
-    annotationProcessor libs.room_ap
+    kapt libs.room_ap
     implementation libs.room_rx
 
     implementation libs.graphs
@@ -52,4 +56,8 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
+}
+
+kapt {
+    generateStubs = true
 }
